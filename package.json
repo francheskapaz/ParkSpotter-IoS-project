@@ -2,17 +2,15 @@
   "name": "parkspotter-ios-project",
   "version": "1.0.0",
   "description": "Progetto gruppo 13 per il corso Ingegneria del Software",
-  "main": "script.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon script.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
+    "express": "^4.19.2",
+    "mongoose": "^8.3.3"
   }
 }
