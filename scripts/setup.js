@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 var Parking = require('../app/models/parking');
+var User = require('../app/models/user');
 
 var mongoose = require('mongoose');
 // connect to database
@@ -9,10 +10,10 @@ mongoose.connect(process.env.DB_URL)
         console.log("Connected to Database");
     });
 
-// Clear the collection
-Parking.deleteMany({})
+// Add example parkings
+Parking.deleteMany({}) // Clear collection
     .then(() => {
-        // Example parkingss from https://dati.trentino.it/dataset/parcheggio-protetto-per-biciclette-open-data
+        // Example parkings from https://dati.trentino.it/dataset/parcheggio-protetto-per-biciclette-open-data
         var parkingOne = new Parking({
             name: "Area Ex Zuffo",
             fee: 0,
@@ -57,6 +58,34 @@ Parking.deleteMany({})
         return parkingTwo.save()
     }).then(() => {
         console.log('Parking 2 saved successfully');
+    })
+
+// Add example users
+User.deleteMany({}) // Clear collection
+    .then(() => {
+        var userOne = new User({
+            type: "Consumer",
+            username: "JohnDoe",
+            email: "johndoe@mail.com",
+            password: "1234",
+            dateOfBirth: new Date('1975-01-01'),
+            credibility: 50
+        });
+        return userOne.save()
+    }).then(() => {
+        console.log('User 1 saved successfully');
+    }).then(() => {
+        var userTwo = new User({
+            type: "Proprietario",
+            username: "JaneDoe",
+            email: "janedoe@mail.com",
+            password: "4321",
+            dateOfBirth: new Date('1980-01-01'),
+            credit: 80
+        });
+        return userTwo.save()
+    }).then(() => {
+        console.log('User 2 saved successfully');
         process.exit();
     })
 
