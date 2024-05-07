@@ -1,0 +1,20 @@
+[
+    {
+        "username": "usuario1",
+        "email": "usuario1@example.com",
+        "password": "contraseña1",
+        "age": 25
+    },
+    {
+        "username": "usuario2",
+        "email": "usuario2@example.com",
+        "password": "contraseña2",
+        "age": 30
+    },
+    {
+        "username": "usuario3",
+        "email": "usuario3@example.com",
+        "password": "contraseña3",
+        "age": 35
+    }
+]

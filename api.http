@@ -1,0 +1,13 @@
+GET http://localhost:8080/utente/utenteregistrato
+
+################
+
+POST  http://localhost:8080/utente
+Content-Type: application/json
+
+{
+    "username": "USUARIO POST",
+    "email": "USUARIO POST@example.com",
+    "password": "passUSUARIO-POST4",
+    "age": 40
+}

@@ -1,21 +1,29 @@
-const app = require('./app/app.js');
-const mongoose = require('mongoose');
+const express = require('express') 
+const app = express()
+const utenteregistratoJSON = require('./utenteregistrato.json')
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT ?? 8080
 
-/**
- * Configure mongoose
- */
-// mongoose.Promise = global.Promise;
-// app.locals.db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
-//     .then ( () => {
-//         console.log("Connected to Database");
+app.get('/utente/utenteregistrato', (req, res) => {
+    res.json(utenteregistratoJSON)
+})
 
-//         app.listen(port, () => {
-//             console.log(`Server listening on port ${port}`);
-//         });
-//     });
+app.post('/utente', (req, res) => {
+    let body = ''
+    req.on('data', chunk => {
+      body += chunk.toString()
+    })
+    req.on('end', () => {
+      const data = JSON.parse(body)
+      data.timestamp = Date.now()
+      res.status(201).json(data) 
+    })
+  })
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
+  app.use((req, res) => {
+    res.status(404).send('<h1>404</h1>')
+  })
+
+  app.listen(PORT, () => {
+    console.log('server listening on port http://localhost:8080')
+  })
