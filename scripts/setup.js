@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 var Parking = require('../app/models/parking');
-var User = require('../app/models/user');
 
 var mongoose = require('mongoose');
 // connect to database
@@ -58,34 +57,6 @@ Parking.deleteMany({}) // Clear collection
         return parkingTwo.save()
     }).then(() => {
         console.log('Parking 2 saved successfully');
-    })
-
-// Add example users
-User.deleteMany({}) // Clear collection
-    .then(() => {
-        var userOne = new User({
-            type: "Consumer",
-            username: "JohnDoe",
-            email: "johndoe@mail.com",
-            password: "1234",
-            dateOfBirth: new Date('1975-01-01'),
-            credibility: 50
-        });
-        return userOne.save()
-    }).then(() => {
-        console.log('User 1 saved successfully');
-    }).then(() => {
-        var userTwo = new User({
-            type: "Proprietario",
-            username: "JaneDoe",
-            email: "janedoe@mail.com",
-            password: "4321",
-            dateOfBirth: new Date('1980-01-01'),
-            credit: 80
-        });
-        return userTwo.save()
-    }).then(() => {
-        console.log('User 2 saved successfully');
         process.exit();
     })
 
