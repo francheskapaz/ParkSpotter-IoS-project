@@ -1,0 +1,61 @@
+[
+    {
+        "id": "60971334f0d172003a440c8e",
+        "name": "Parking A",
+        "fee": 5.50,
+        "maxStop": 3,
+        "open": true,
+        "coordinates": {
+            "nord": 40.7128,
+            "est": -74.0060
+        },
+        "nParkingSpaces": 100,
+        "vehicleType": "Car",
+        "nFree": 50,
+        "reservations": [
+            {
+                "timeStart": "2024-05-08T10:00:00Z",
+                "timeEnd": "2024-05-08T12:00:00Z"
+            },
+            {
+                "timeStart": "2024-05-10T08:00:00Z",
+                "timeEnd": "2024-05-10T10:30:00Z"
+            }
+        ]
+    },
+    {
+        "id": "60971350f0d172003a440c8f",
+        "name": "Parking B",
+        "fee": 7.00,
+        "maxStop": 2,
+        "open": false,
+        "coordinates": {
+            "nord": 34.0522,
+            "est": -118.2437
+        },
+        "nParkingSpaces": 80,
+        "vehicleType": "Motorcycle",
+        "nFree": 20,
+        "reservations": [
+            {
+                "timeStart": "2024-05-09T12:00:00Z",
+                "timeEnd": "2024-05-09T14:30:00Z"
+            }
+        ]
+    },
+    {
+        "id": "6097136cf0d172003a440c90",
+        "name": "Parking C",
+        "fee": 8.00,
+        "maxStop": 4,
+        "open": true,
+        "coordinates": {
+            "nord": 51.5074,
+            "est": -0.1278
+        },
+        "nParkingSpaces": 120,
+        "vehicleType": "Van",
+        "nFree": 80,
+        "reservations": []
+    }
+]
