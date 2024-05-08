@@ -4,6 +4,7 @@ const parcheggi = require('./parcheggi.json')
 const cors = require('cors') 
 const {validateParcheggio, validatePartialParcheggio} = require('./scheme/parcheggio.js')
 app.use(express.json())
+ 
 
 app.use(cors({
   origin: (origin, callback) => {
