@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: "ParkSpotter OpenAPI 3.0"
+  description: API for managing parkings.
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Localhost
+paths:
+  /users:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - email
+                - username
+                - password
+              properties:
+                type:
+                  type: string
+                  description: 'User type ("Consumer" or "Proprietario")'
+                email:
+                  type: string
+                  format: email
+                  description: 'Email of the user'
+                username:
+                  type: string
+                  description: 'Username to log in the application'
+                password:
+                  type: string
+                  description: 'Password of the user'
+      responses:
+        '201':
+          description: 'User created successfully. Link in the Location header'
+        '400':
+          description: 'Bad request, invalid input'
+  /users/{userId}:
+    get:
+      summary: Return user info
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '301':
+          description: Redirect to the logged user's info
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+  /authentication:
+    post:
+      summary: Authenticate the user and generate a new token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the user
+                password:
+                  type: string
+                  description: Password of the user
+      responses:
+        '200':
+          description: User authenticated successfully, token generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  id:
+                    type: string
+                  self:
+                    type: string
+        '400':
+          description: User not found or wrong password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+components:
+  schemas:
+    Parking:
+      type: object
+      required:
+        - open
+        - coordinates
+        - nParkingSpaces
+        - vehicleType
+      properties:
+        id:
+          type: string
+          description: 'ID of the parking (automatically generated)'
+        name:
+          type: string
+          description: 'Name of the parking'
+        fee:
+          type: number
+          format: integer
+          description: 'Hourly fee'
+        maxStop:
+          type: number
+          format: integer
+          description: 'Maximum stop time in minutes'
+        open:
+          type: boolean
+          description: 'Indicate if the parking is available'
+        coordinates:
+          type: object
+          properties:
+            nord:
+              type: number
+              format: float
+            est:
+              type: number
+              format: float
+          description: 'Geographic coordinates of the parking (UTM format)'
+        nParkingSpaces:
+          type: number
+          format: integer
+          description: 'Total number of parking spaces'
+        vehicleType:
+          type: string
+          description: 'Type of supported veichle'
+        nFree:
+          type: number
+          format: integer
+          description: 'Number of free parking spaces'
+        reservations:
+          type: array
+          items:
+            type: object
+            properties:
+              timeStart:
+                type: string
+                format: date-time
+              timeEnd:
+                type: string
+                format: date-time
+          description: 'Parking reservations'
+    User:
+      type: object
+      required:
+        - type
+        - username
+        - password
+      properties:
+        type:
+          type: string
+          description: User type ("Consumer", "Proprietario", "Admin")
+        username:
+          type: string
+          description: 'Username that identifies the user'
+        email:
+          type: string
+          format: email
+          description: 'E-mail of the user'
+        password:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        credibility:
+          type: number
+          format: float
+          description: Credibility of the user, applicable if user type is "Consumer"
+        credit:
+          type: number
+          format: float
+          description: Credit of the user, applicable if user type is "Proprietario"

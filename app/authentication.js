@@ -36,12 +36,8 @@ router.post('', async function(req, res) {
         message: 'Enjoy your token!',
         token: token,
         id: user._id,
-        self: "api/v1/" + user._id
+        self: "api/v1/users/" + user._id
     });
 });
-
-function validatePassword(password, hash) {
-    bcrypt.compare(password, hash)
-}
 
 module.exports = router;

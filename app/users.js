@@ -29,7 +29,7 @@ router.post('', async function(req, res) {
 
     // Check password
     if (!req.body.password || typeof req.body.password !== 'string') {
-        return res.status(400).json({error: 'Wrong password'});
+        return res.status(400).json({error: 'Password must be a non-empty string'});
     }
 
     // Create new user
@@ -77,7 +77,7 @@ router.get('/:userId', async(req, res) => {
         return res.status(404).json({ success: false, message: 'User not found' })
     } else if (user.type === 'Consumer') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user._id,
+            self: '/api/v1/users/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
@@ -86,7 +86,7 @@ router.get('/:userId', async(req, res) => {
         });
     } else if (user.type === 'Proprietario') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user._id,
+            self: '/api/v1/users/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
@@ -95,7 +95,7 @@ router.get('/:userId', async(req, res) => {
         });
     } else if (user.type === 'Admin') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user._id,
+            self: '/api/v1/users/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
