@@ -23,11 +23,11 @@ app.use(cors({
   }
 }))
 
-app.get('/parcheggi', (req, res) => {
+app.get('/apiParcheggi/parcheggi', (req, res) => {
   res.json(parcheggi)
 })
 
-app.get('/parcheggi/:id', (req, res) => {
+app.get('/apiParcheggi/parcheggi/:id', (req, res) => {
   const { id } = req.params
   const foundParcheggio = parcheggi.find(parcheggio => parcheggio.id === id)
   if (foundParcheggio) {
@@ -37,7 +37,7 @@ app.get('/parcheggi/:id', (req, res) => {
   }
 })
 
-app.post('/parcheggi', (req, res) => {
+app.post('/apiParcheggi/parcheggi', (req, res) => {
   const result = validateParcheggio(req.body)
   if (result.error){
     res.status(400).json( { error: JSON.parse(result.error.message)})
@@ -50,7 +50,7 @@ app.post('/parcheggi', (req, res) => {
   res.status(201).json(newParcheggio)
 })
 
-app.patch('/parcheggi/:id', (req, res) => {
+app.patch('/apiParcheggi/parcheggi/:id', (req, res) => {
   const result = validatePartialParcheggio(req.body)
   if (!result.success){
     return res.status(400).json({error: JSON.parse(result.error.message)})
@@ -70,7 +70,7 @@ app.patch('/parcheggi/:id', (req, res) => {
   return res.json(updateParcheggio)
 })
 
-app.delete('/parcheggi/:id', (req, res) => {
+app.delete('/apiParcheggi/parcheggi/:id', (req, res) => {
   const { id } = req.params
   const parcheggioIndex = parcheggi.findIndex(parcheggio => parcheggio.id === id)
 
