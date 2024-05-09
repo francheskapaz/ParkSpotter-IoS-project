@@ -1,11 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>hello</h1>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <title>Parkspotter</title>
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Parkspotter</h1>
+
+        <div class="checkbox-container">
+            <label><input type="checkbox" id="car"> Automobili</label>
+            <label><input type="checkbox" id="bike"> Biciclette</label>
+            <label><input type="checkbox" id="motorbike"> Moto</label>
+            <!-- Add more checkboxes as needed for different points of interest -->
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                showCars();
+            })
+            $('#car').prop('checked', true);
+            $('#bike').prop('checked', false);
+            $('#motorbike').prop('checked', false);
+            $('#car').change(function() {
+                if ($(this).is(':checked')) {
+                    showCars();
+                } else {
+                    hideCars();
+                }
+            });
+            $('#bike').change(function() {
+                if ($(this).is(':checked')) {
+                    showBikes();
+                } else {
+                    hideBikes();
+                }
+            });
+            $('#motorbike').change(function() {
+                if ($(this).is(':checked')) {
+                    showMotorbikes();
+                } else {
+                    hideMotorbikes();
+                }
+            });
+        </script>
+        <script src="/map.js"></script>
+    </body>
 </html>
+
