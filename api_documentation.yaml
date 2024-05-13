@@ -1,0 +1,235 @@
+openapi: 3.0.1
+info:
+  title: ParkSpotter Parking API
+  description: This API handles information from the ParkSpotter parking database
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/apiParcheggi/parcheggi
+tags:
+  - name: parking lots
+    description: This endpoint manages all information related to parking lots
+paths:
+  /:
+    get:
+      tags:
+        - parcheggi
+      summary: Show all parking lots
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parcheggio'
+    post:
+      tags:
+        - parcheggi
+      summary: Create a new parking lot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcheggioInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcheggio'
+  /{id}:
+    get:
+      tags:
+        - parcheggi
+      summary: Shows detailed information of a specific patch by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Parking ID to display
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcheggio'
+    patch:
+      tags:
+        - parcheggi
+      summary: Update an existing patch by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Parking ID to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcheggioUpdateInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcheggio'
+    delete:
+      tags:
+        - parcheggi
+      summary: Delete an existing parking lot by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Parking ID to delete
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteReasonInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    ParcheggioInput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        fee:
+          type: number
+        maxStop:
+          type: integer
+        open:
+          type: boolean
+        coordinates:
+          type: object
+          properties:
+            nord:
+              type: number
+            est:
+              type: number
+        nParkingSpaces:
+          type: integer
+        vehicleType:
+          type: string
+        nFree:
+          type: integer
+        reservations:
+          type: array
+          items:
+            type: object
+            properties:
+              timeStart:
+                type: string
+              timeEnd:
+                type: string
+      required:
+        - id
+        - name
+        - fee
+        - maxStop
+        - open
+        - coordinates
+        - nParkingSpaces
+        - vehicleType
+        - nFree
+        - reservations
+    Parcheggio:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        fee:
+          type: number
+        maxStop:
+          type: integer
+        open:
+          type: boolean
+        coordinates:
+          type: object
+          properties:
+            nord:
+              type: number
+            est:
+              type: number
+        nParkingSpaces:
+          type: integer
+        vehicleType:
+          type: string
+        nFree:
+          type: integer
+        reservations:
+          type: array
+          items:
+            type: object
+            properties:
+              timeStart:
+                type: string
+              timeEnd:
+                type: string
+    ParcheggioUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+        fee:
+          type: number
+        maxStop:
+          type: integer
+        open:
+          type: boolean
+        coordinates:
+          type: object
+          properties:
+            nord:
+              type: number
+            est:
+              type: number
+        nParkingSpaces:
+          type: integer
+        vehicleType:
+          type: string
+        nFree:
+          type: integer
+        reservations:
+          type: array
+          items:
+            type: object
+            properties:
+              timeStart:
+                type: string
+              timeEnd:
+                type: string
+    DeleteReasonInput:
+      type: object
+      properties:
+        reason:
+          type: string
+      required:
+        - reason

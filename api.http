@@ -1,13 +1,12 @@
-### mostra tutti i parcheggi
+### File created to review the correct functioning of the endpoints ###
+
+### shows all parking lots
 GET http://localhost:8080/apiParcheggi/parcheggi
 
-### mostra informazione dettagliata di un parcheggio specifico es. parcheggio B tramite la sua id
+### shows detailed information of a specific parking lot e.g. parking B via his id
 GET http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
 
-### cerca parcheggi per ubicazione geografica
-GET http://localhost:8080/apiParcheggi/parcheggi/search
-
-### crea un parcheggio
+### creates a parking lot
 POST  http://localhost:8080/apiParcheggi/parcheggi
 Content-Type: application/json
 
@@ -32,18 +31,18 @@ Content-Type: application/json
   ]
 }
 
-### aggiorna i parcheggio
+### upgrade a parking lot
 PATCH http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
 Content-Type: application/json
 
 {
-    "name": "NUOVO NOME"
+    "name": "San Severino"
 }
 
-### elimina un parcheggio
+### delete a parking lot
 DELETE http://localhost:8080/apiParcheggi/parcheggi/60971334f0d172003a440c8e
 Content-Type: application/json
 
 {
-    "reason": "Parcheggio eliminato"
+    "reason": "Parking no longer available"
 }

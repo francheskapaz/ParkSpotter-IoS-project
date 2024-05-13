@@ -1,9 +1,10 @@
-const z = require('zod')
+import z  from 'zod' // Importing the zod library for schema validation
 
+// Defining a schema for validating parcheggio objects
 const parcheggioScheme = z.object({
     id: z.string({
         invalid_type_error: 'id must be a string',
-        required_error: 'ide is required' 
+        required_error: 'id is required' 
     }),
     name: z.string({
         invalid_type_error: 'name must be a string',
@@ -52,14 +53,11 @@ const parcheggioScheme = z.object({
     }))
 })
 
-function validateParcheggio (object) {
+// Exporting a function to validate a complete parking lot object
+export function validateParcheggio (object) {
     return parcheggioScheme.safeParse(object)
 }
-function validatePartialParcheggio(object) {
+// Exporting a function to validate a partial parking lot object
+export function validatePartialParcheggio(object) {
     return parcheggioScheme.partial().safeParse(object)
-}
-
-module.exports = {
-    validateParcheggio, 
-    validatePartialParcheggio
 }
