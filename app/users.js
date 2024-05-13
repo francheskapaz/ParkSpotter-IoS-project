@@ -104,6 +104,28 @@ router.get('/:userId', async(req, res) => {
     }
 });
 
+/*
+ * Delete user
+ */
+router.delete('/:userId', async(req, res) => {
+    // Only Admin can delete other users
+    if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
+        return res.status(403).json({ success: false, message: 'Permission denied' });
+    }
+
+    try {
+        const result = await User.findByIdAndDelete(req.params.userId);
+
+        if (result) {
+            res.status(200).json({ success: true, message: 'User deleted.' });
+        } else {
+            res.status(404).json({ success: false, message: `No user found with id ${req.params.userId}` });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 function isValidUserType(type) {
     return ['Consumer', 'Proprietario'].indexOf(type) !== -1;
 }

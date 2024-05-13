@@ -63,6 +63,26 @@ paths:
           description: Permission denied
         '404':
           description: User not found
+    delete:
+      summary: Delete user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
   /authentication:
     post:
       summary: Authenticate the user and generate a new token
