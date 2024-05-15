@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        </style>
+    </head>
+    <body>
+
+        <h1>Sign up</h1>
+
+        <form action="" id="signupForm" class=>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="your_username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="your_password" required>
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" class="form-control" placeholder="email@email.com" required>
+            <label for="usertype">User type:</label>
+            <select id="usertype" name="usertype">
+                <option value="Consumer">Consumer</option>
+                <option value="Owner">Owner</option>
+            </select>
+            <button type="submit">Signup</button>
+        </form>
+
+        <script>
+        let signupForm = document.getElementById("signupForm");
+        signupForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            let data = {
+                type: 'Consumer',
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            username.value = "";
+            password.value = "";
+
+            fetch('/api/v1/users', {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+                body: JSON.stringify(data)
+            })
+                .then((res) => {
+                    if (res.status === 201) {
+                        console.log(res.headers.get('location'));
+                    }
+                })
+
+        });
+
+        </script>
+    </body>
+</html>
+

@@ -36,7 +36,7 @@ router.post('', async function(req, res) {
     user = new User({
         type: req.body.type,
         username: req.body.username,
-        email: req.body.email,
+        email: req.body.email
     });
 
     // Create password hash
