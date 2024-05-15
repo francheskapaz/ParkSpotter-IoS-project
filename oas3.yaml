@@ -117,8 +117,19 @@ paths:
                     type: string
                   self:
                     type: string
-        '400':
-          description: User not found or wrong password
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '403':
+          description: Wrong password
           content:
             application/json:
               schema:
@@ -193,6 +204,7 @@ components:
       required:
         - type
         - username
+        - email
         - password
       properties:
         type:

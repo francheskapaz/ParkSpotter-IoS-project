@@ -14,12 +14,12 @@ router.post('', async function(req, res) {
 
     // User not found or password is incorrect
     if (!user) {
-        return res.json({ success: false, message: 'User not found' });
+        return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     const passwordCorrect = await bcrypt.compare(req.body.password, user.password);
     if (!passwordCorrect) {
-        return res.json({ success: false, message: 'Wrong password' });
+        return res.status(403).json({ success: false, message: 'Wrong password' });
     }
 
     // User authenticated -> create a token

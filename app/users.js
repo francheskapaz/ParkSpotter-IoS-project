@@ -65,12 +65,11 @@ router.get('/:userId', async(req, res) => {
 
     // Only Admin can view other users
     if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
-        console.log(req.loggedUser.id, req.params.userId)
         return res.status(403).json({ success: false, message: 'Permission denied' });
     }
 
-    // Find the user using the mongoose _id from its JWT token
-    let user = await User.findById(req.params.userId);
+    // Find the user using the mongoose id from its JWT token
+    const user = await User.findById(req.params.userId);
 
     // Return info based on the user type
     if (!user) {
