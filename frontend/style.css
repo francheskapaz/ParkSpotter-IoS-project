@@ -1,0 +1,58 @@
+/* Stile generale */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Stile per il form di prenotazione */
+#prenotazione-form {
+    margin-bottom: 20px;
+}
+
+#prenotazione-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#prenotazione-form input[type="text"],
+#prenotazione-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#prenotazione-form button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#prenotazione-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Stile per la tabella dei parcheggi */
+#parcheggi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#parcheggi-table th, #parcheggi-table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+#parcheggi-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
