@@ -1,6 +1,5 @@
 const path = require('path');
 const cors = require('cors')
-
 const express = require('express');
 const app = express();
 
@@ -17,7 +16,6 @@ app.use(express.json());
 /**
  * Serve static files for the front-end
  */
-// app.use('/', express.static('static'));
 app.use(express.static(path.join(__dirname, '..', 'static'),{extensions:['html']}));
 
 
