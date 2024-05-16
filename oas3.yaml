@@ -139,54 +139,188 @@ paths:
                     type: boolean
                   message:
                     type: string
+  /parkings:
+    get:
+      summary: Get all parkings
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parking'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new parking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parking'
+      responses:
+        '201':
+          description: Parking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parking'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /parkings/{id}:
+    get:
+      summary: Get a parking by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parking'
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update a parking by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartialParking'
+      responses:
+        '200':
+          description: Parking updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parking'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a parking by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Parking deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     Parking:
       type: object
-      required:
-        - open
-        - coordinates
-        - nParkingSpaces
-        - vehicleType
       properties:
         id:
           type: string
-          description: 'ID of the parking (automatically generated)'
+          description: ID of the parking
         name:
           type: string
-          description: 'Name of the parking'
+          description: Name of the parking
         fee:
           type: number
-          format: integer
-          description: 'Hourly fee'
+          description: Hourly fee
         maxStop:
           type: number
-          format: integer
-          description: 'Maximum stop time in minutes'
+          description: Maximum stop time in minutes
         open:
           type: boolean
-          description: 'Indicate if the parking is available'
+          description: Indicate if the parking is available
         coordinates:
           type: object
           properties:
             nord:
               type: number
-              format: float
+              description: North coordinate
             est:
               type: number
-              format: float
-          description: 'Geographic coordinates of the parking (UTM format)'
+              description: East coordinate
+          description: Geographic coordinates of the parking
         nParkingSpaces:
-          type: number
-          format: integer
-          description: 'Total number of parking spaces'
+          type: integer
+          description: Total number of parking spaces
         vehicleType:
           type: string
-          description: 'Type of supported veichle'
+          description: Type of supported vehicle
         nFree:
-          type: number
-          format: integer
-          description: 'Number of free parking spaces'
+          type: integer
+          description: Number of free parking spaces
         reservations:
           type: array
           items:
@@ -195,10 +329,69 @@ components:
               timeStart:
                 type: string
                 format: date-time
+                description: Reservation start time
               timeEnd:
                 type: string
                 format: date-time
-          description: 'Parking reservations'
+                description: Reservation end time
+          description: Parking reservations
+    PartialParking:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the parking
+        name:
+          type: string
+          description: Name of the parking
+        fee:
+          type: number
+          description: Hourly fee
+        maxStop:
+          type: number
+          description: Maximum stop time in minutes
+        open:
+          type: boolean
+          description: Indicate if the parking is available
+        coordinates:
+          type: object
+          properties:
+            nord:
+              type: number
+              description: North coordinate
+            est:
+              type: number
+              description: East coordinate
+          description: Geographic coordinates of the parking
+        nParkingSpaces:
+          type: integer
+          description: Total number of parking spaces
+        vehicleType:
+          type: string
+          description: Type of supported vehicle
+        nFree:
+          type: integer
+          description: Number of free parking spaces
+        reservations:
+          type: array
+          items:
+            type: object
+            properties:
+              timeStart:
+                type: string
+                format: date-time
+                description: Reservation start time
+              timeEnd:
+                type: string
+                format: date-time
+                description: Reservation end time
+          description: Parking reservations
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
     User:
       type: object
       required:

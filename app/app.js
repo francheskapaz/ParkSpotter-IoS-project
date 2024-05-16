@@ -1,11 +1,13 @@
 const path = require('path');
 const cors = require('cors')
 const express = require('express');
+
 const app = express();
 
 const authentication = require('./authentication.js');
 const users = require('./users.js');
 const tokenChecker = require('./tokenChecker.js');
+const parcheggiRouter = require('./parcheggi.js');
 
 /**
  * Express.js parsing middleware
@@ -46,6 +48,7 @@ app.use('/api/v1/users/:userId', tokenChecker);
  * Resource routing
  */
 app.use('/api/v1/users', users);
+app.use('/api/v1/parkings', parcheggiRouter);
 
 
 module.exports = app;

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Progetto gruppo 13 per il corso Ingegneria del Software",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
@@ -15,6 +16,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.3"
+    "mongoose": "^8.3.3",
+    "zod": "3.23.6"
   }
 }

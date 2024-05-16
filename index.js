@@ -15,4 +15,3 @@ app.locals.db = mongoose.connect(process.env.DB_URL, { serverApi: { version: '1'
             console.log(`Server listening on port ${port}`);
         });
     });
-

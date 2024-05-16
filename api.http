@@ -1,0 +1,48 @@
+### File created to review the correct functioning of the endpoints ###
+
+### shows all parking lots
+GET http://localhost:8080/apiParcheggi/parcheggi
+
+### shows detailed information of a specific parking lot e.g. parking B via his id
+GET http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
+
+### creates a parking lot
+POST  http://localhost:8080/apiParcheggi/parcheggi
+Content-Type: application/json
+
+{
+  "id": "13971350f0d172003a440c8f",
+  "name": "Parking D",
+  "fee": 7,
+  "maxStop": 1,
+  "open": true,
+  "coordinates": {
+    "nord": 34.0522,
+    "est": -118.2437
+  },
+  "nParkingSpaces": 40,
+  "vehicleType": "Motorcycle",
+  "nFree": 20,
+  "reservations": [
+    {
+      "timeStart": "2024-05-09T12:00:00Z",
+      "timeEnd": "2024-05-09T14:30:00Z"
+    }
+  ]
+}
+
+### upgrade a parking lot
+PATCH http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
+Content-Type: application/json
+
+{
+    "name": "San Severino"
+}
+
+### delete a parking lot
+DELETE http://localhost:8080/apiParcheggi/parcheggi/60971334f0d172003a440c8e
+Content-Type: application/json
+
+{
+    "reason": "Parking no longer available"
+}

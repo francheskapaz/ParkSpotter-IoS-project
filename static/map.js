@@ -29,13 +29,13 @@ var motorbikeMarkers = Array();
 
 function showCars() {
     // Fetch parkings from API and display them on the map
-    fetch('/api/v1/parcheggi')
+    fetch('/api/v1/parkings')
         .then((res) => {
             return res.json();
         })
         .then((data) => {
             for (const parking of data) {
-                if (parking.vehicleType !== 'car') continue;
+                if (parking.vehicleType.toLowerCase() !== 'car') continue;
 
                 // Select the icon
                 var icon = defaultIcon;
@@ -47,7 +47,7 @@ function showCars() {
                 // Add marker
                 var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
                     .on('click', () => {
-                        document.location = '/api/v1/parcheggi/' + parking.id;
+                        document.location = '/api/v1/parkings/' + parking.id;
                     })
                     .addTo(map);
                 carMarkers.push(m);
@@ -57,13 +57,13 @@ function showCars() {
 
 function showBikes() {
     // Fetch parkings from API and display them on the map
-    fetch('/api/v1/parcheggi')
+    fetch('/api/v1/parkings')
         .then((res) => {
             return res.json();
         })
         .then((data) => {
             for (const parking of data) {
-                if (parking.vehicleType !== 'bike') continue;
+                if (parking.vehicleType.toLowerCase() !== 'bike') continue;
 
                 // Select the icon
                 var icon = defaultIcon;
@@ -75,7 +75,7 @@ function showBikes() {
                 // Add marker
                 var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
                     .on('click', () => {
-                        document.location = '/api/v1/parcheggi/' + parking.id;
+                        document.location = '/api/v1/parkings/' + parking.id;
                     })
                     .addTo(map);
                 bikeMarkers.push(m);
@@ -85,13 +85,13 @@ function showBikes() {
 
 function showMotorbikes() {
     // Fetch parkings from API and display them on the map
-    fetch('/api/v1/parcheggi')
+    fetch('/api/v1/parkings')
         .then((res) => {
             return res.json();
         })
         .then((data) => {
             for (const parking of data) {
-                if (parking.vehicleType !== 'motorbike') continue;
+                if (parking.vehicleType.toLowerCase() !== 'motorbike') continue;
 
                 // Select the icon
                 var icon = defaultIcon;
@@ -103,7 +103,7 @@ function showMotorbikes() {
                 // Add marker
                 var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
                     .on('click', () => {
-                        document.location = '/api/v1/parcheggi/' + parking.id;
+                        document.location = '/api/v1/parkings/' + parking.id;
                     })
                     .addTo(map);
                 motorbikeMarkers.push(m);
