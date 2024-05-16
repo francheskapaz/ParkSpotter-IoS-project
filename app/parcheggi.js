@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { validateParcheggio, validatePartialParcheggio } = require('../scheme/parcheggioSchema.js'); // Importar funciones de validación desde el archivo de esquema
-const { Parking } = require('./models/parking.js');
+const  Parking  = require('./models/parking.js');
 
 const parcheggiRouter = Router()
 
