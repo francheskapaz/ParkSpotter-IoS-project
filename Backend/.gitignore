@@ -1,0 +1,10 @@
+# Directory node_modules
+node_modules/
+
+# File di log
+*.log
+
+# File generati automaticamente
+/dist/
+/build/
+/out/

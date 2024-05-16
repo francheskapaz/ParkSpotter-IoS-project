@@ -29,8 +29,6 @@ app.post('/api/prenotazioni', (req, res) => {
   parcheggio.disponibile = false;
   parcheggio.nomeCliente = nomeCliente;
 
-  // Puoi qui salvare questa prenotazione in un database o in un file, ad esempio
-
   // Invia una risposta di conferma al client
   res.status(201).json({ message: 'Prenotazione effettuata con successo', parcheggio });
 });
