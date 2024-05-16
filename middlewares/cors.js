@@ -1,4 +1,4 @@
-import cors from 'cors' // Importing the cors middleware
+const cors = require('cors'); // Importing the cors middleware
 /*
 export const corsMiddleware = () => cors({
     origin: (origin, callback) => {
@@ -19,6 +19,6 @@ export const corsMiddleware = () => cors({
   */
 
 // Exporting a middleware function named corsMiddleware, which allows requests from any origin
-export const corsMiddleware = () => cors({
+exports.corsMiddleware = () => cors({
     origin: '*',
 });

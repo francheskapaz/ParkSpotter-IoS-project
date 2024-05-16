@@ -2,8 +2,8 @@
   "name": "parkspotter-ios-project",
   "version": "1.0.0",
   "description": "Progetto gruppo 13 per il corso Ingegneria del Software",
-  "main": "app.js",
-  "type": "module",
+  "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node app.js"
   },
@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "2.8.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "4.19.2",
     "mongodb": "^6.5.0",
-    "mongoose": "^8.3.3",
+    "mongoose": "^8.3.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "zod": "3.23.6"
