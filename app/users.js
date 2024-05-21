@@ -10,26 +10,26 @@ const bcrypt = require('bcrypt'); // used for password hashing
 router.post('', async function(req, res) {
     // Check user type
     if (!isValidUserType(req.body.type)) {
-        return res.status(400).json({error: 'User type must be "Consumer" or "Proprietario"'});
+        return res.status(400).json({ error: 'User type must be "Consumer" or "Proprietario"' });
     }
 
     // Check email
     if (!isValidEmail(req.body.email)) {
-        return res.status(400).json({error: 'The field "email" must be a non-empty string, in email format'});
+        return res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
     }
 
     // Check if user already exists
     if (!req.body.username) {
-        return res.status(400).json({error: 'Username can not be empty'});
+        return res.status(400).json({ error: 'Username can not be empty' });
     }
-    var user = await User.findOne({username: req.body.username});
+    var user = await User.findOne({ username: req.body.username });
     if (user) {
-        return res.status(400).json({error: 'Username already registered'});
+        return res.status(400).json({ error: 'Username already registered' });
     }
 
     // Check password
     if (!req.body.password || typeof req.body.password !== 'string') {
-        return res.status(400).json({error: 'Password must be a non-empty string'});
+        return res.status(400).json({ error: 'Password must be a non-empty string' });
     }
 
     // Create new user
@@ -40,22 +40,22 @@ router.post('', async function(req, res) {
     });
 
     // Create password hash
-    bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            user.password = hash;
-        })
-        .then(() => {
-            user = user.save();
-        });
+    const hash = await bcrypt.hash(req.body.password, 10)
+    if (hash) {
+        user.password = hash;
+        user = await user.save();
+    } else {
+        res.status(500).json({ success: false, message: 'Something went wrong' });
+    }
 
     // Send the link of the new resource
-    res.location('/api/v1/users/' + user._id).status(201).send();
+    res.location('/api/v1/users/' + user.id).status(201).send();
 });
 
 /*
  * Return user info
  */
-router.get('/:userId', async(req, res) => {
+router.get('/:userId', async (req, res) => {
     if (req.params.userId === 'me') {
         return res.status(301).json({
             success: true,
@@ -106,7 +106,7 @@ router.get('/:userId', async(req, res) => {
 /*
  * Delete user
  */
-router.delete('/:userId', async(req, res) => {
+router.delete('/:userId', async (req, res) => {
     // Only Admin can delete other users
     if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
         return res.status(403).json({ success: false, message: 'Permission denied' });
