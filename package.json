@@ -4,7 +4,8 @@
   "description": "Progetto gruppo 13 per il corso Ingegneria del Software",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,10 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "node-fetch": "^3.3.2",
+    "supertest": "^7.0.0"
   }
 }

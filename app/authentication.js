@@ -17,6 +17,9 @@ router.post('', async function(req, res) {
         return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+    if (!req.body.password) {
+        return res.status(403).json({ success: false, message: 'Password field is required' });
+    }
     const passwordCorrect = await bcrypt.compare(req.body.password, user.password);
     if (!passwordCorrect) {
         return res.status(403).json({ success: false, message: 'Wrong password' });
