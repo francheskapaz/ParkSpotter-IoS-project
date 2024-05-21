@@ -1,7 +1,8 @@
 
 require('dotenv').config()
-var Parking  = require('../app/models/parking.js')
 const mongoose = require('mongoose');
+var Parking  = require('../app/models/parking.js')
+
 
 
 // connect to database
@@ -9,6 +10,7 @@ mongoose.connect(process.env.DB_URL)
     .then( () => {
         console.log("Connected to Database");
     });
+
 
 // Add example parkings
 Parking.deleteMany({}) // Clear collection
@@ -58,5 +60,12 @@ Parking.deleteMany({}) // Clear collection
         return parkingTwo.save()
     }).then(() => {
         console.log('Parking 2 saved successfully');
-        process.exit();
+        return Parking.find({});
+    }). then ((parkings) => {
+        console.log('All parkings: ', parkings);
+        process.exit()
     })
+    .catch((error) => {
+        console.error('Error:', error);
+        process.exit(1);
+    });

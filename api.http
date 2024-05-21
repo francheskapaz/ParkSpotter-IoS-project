@@ -1,7 +1,7 @@
 ### File created to review the correct functioning of the endpoints ###
 
 ### shows all parking lots
-GET http://localhost:8080/apiParcheggi/parcheggi
+GET http://localhost:8080/api/v1/parkings
 
 ### shows detailed information of a specific parking lot e.g. parking B via his id
 GET http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
