@@ -1,10 +1,6 @@
 const z = require('zod'); 
 
 const parcheggioScheme = z.object({
-    id: z.string({
-        invalid_type_error: 'id must be a string',
-        required_error: 'id is required'
-    }),
     name: z.string({
         invalid_type_error: 'name must be a string',
         required_error: 'name is required'
@@ -25,8 +21,14 @@ const parcheggioScheme = z.object({
         required_error: 'open is required'
     }),
     coordinates: z.object({
-        nord: z.number(),
-        est: z.number()
+        nord: z.number({
+            invalid_type_error: 'nord must be a number',
+            required_error: 'nord is required'
+        }),
+        est: z.number({
+            invalid_type_error: 'est must be a number',
+            required_error: 'est is required'
+        })
     }),
 
     nParkingSpaces: z.number({
@@ -47,9 +49,13 @@ const parcheggioScheme = z.object({
     }),
 
     reservations: z.array(z.object({
-        timeStart: z.string(),
-        timeEnd: z.string()
-    }))
+        timeStart: z.date({
+            invalid_type_error: 'timeStart must be a valid date'
+        }),
+        timeEnd: z.date({
+            invalid_type_error: 'timeEnd must be a valid date'
+        })
+    })).optional()
 });
 
 

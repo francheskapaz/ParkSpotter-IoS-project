@@ -4,10 +4,10 @@
 GET http://localhost:8080/api/v1/parkings
 
 ### shows detailed information of a specific parking lot e.g. parking B via his id
-GET http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
+GET http://localhost:8080/api/v1/parkings/60971350f0d172003a440c8f
 
 ### creates a parking lot
-POST  http://localhost:8080/apiParcheggi/parcheggi
+POST  http://localhost:8080/api/v1/parkings
 Content-Type: application/json
 
 {
@@ -24,15 +24,12 @@ Content-Type: application/json
   "vehicleType": "Motorcycle",
   "nFree": 20,
   "reservations": [
-    {
-      "timeStart": "2024-05-09T12:00:00Z",
-      "timeEnd": "2024-05-09T14:30:00Z"
-    }
+    
   ]
 }
 
 ### upgrade a parking lot
-PATCH http://localhost:8080/apiParcheggi/parcheggi/60971350f0d172003a440c8f
+PATCH http://localhost:8080/api/v1/parkings/664b252fa9ed6d9e373425f9
 Content-Type: application/json
 
 {
@@ -40,7 +37,7 @@ Content-Type: application/json
 }
 
 ### delete a parking lot
-DELETE http://localhost:8080/apiParcheggi/parcheggi/60971334f0d172003a440c8e
+DELETE http://localhost:8080/api/v1/parkings/664cd31b4748f814b41f3537
 Content-Type: application/json
 
 {
