@@ -7,7 +7,7 @@ const { json } = require('express');
 const app = express();
 const { corsMiddleware } = require('../middlewares/cors.js');
 
-const  { parcheggiRouter } = require('./parcheggi.js');
+const parcheggiRouter = require('./parcheggi.js');
 
 
 

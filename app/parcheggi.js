@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { validateParcheggio, validatePartialParcheggio } = require('../scheme/parcheggioSchema.js'); // Importar funciones de validación desde el archivo de esquema
+const { validateParcheggio, validatePartialParcheggio } = require('../scheme/parcheggioSchema.js');
 const  Parking  = require('./models/parking.js');
 
 const parcheggiRouter = Router()
@@ -27,32 +27,20 @@ parcheggiRouter.get('/:id', async (req, res) => {
 
 
 parcheggiRouter.post('/',  async (req, res) => {
+    console.log('Received data:', req.body);
     const result = validateParcheggio(req.body);
     if (!result.success) {
+        console.log('Validation error:', result.error.message);
         return res.status(400).json({ error: result.error.message });
     }
     try {
         const parking = new Parking(req.body);
         await parking.save();
-        res.status(201).json(parking);
+        res.status(201).json(parking.toObject());
     } catch (error) {
+        console.error('Internal server error:', error); 
         res.status(500).json({ error: 'Internal server error' });
     }
-
-    /*
-    try {
-        const result = validateParcheggio(req.body);
-        if (!result.success) {
-            //return res.status(400).json({ error: JSON.parse(result.error.message) });
-            return res.status(400).json({ error: result.error.message });
-        }
-        
-        const newParcheggio = await Parking.create(req.body); 
-        res.status(201).json(newParcheggio);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-    */
 }) 
 
 parcheggiRouter.patch('/:id', async (req, res) => {
@@ -81,4 +69,4 @@ parcheggiRouter.delete('/:id',  async (req, res) => {
     }
 }) 
 
-module.exports = { parcheggiRouter };
+module.exports =  parcheggiRouter ;

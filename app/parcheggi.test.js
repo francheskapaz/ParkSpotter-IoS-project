@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('./app.js'); // Ajusta la ruta según la estructura de tu proyecto
+const app = require('./app.js'); 
 const Parking = require('./models/parking.js');
 
 describe('Parking API', () => {
@@ -126,11 +126,14 @@ describe('Parking API', () => {
       nParkingSpaces: 30,
       vehicleType: "Bike",
       nFree: 5,
-      reservations: [],
+      reservations: [ {
+        timeStart: new Date(),
+        timeEnd: new Date(),
+      }],
     };
     const response = await request(app).post('/api/v1/parkings').send(newParking).expect('Content-Type', /json/).expect(201);
     expect(response.body).toEqual({
-        _id: expect.any(String),  // El ID será generado por MongoDB, por lo que puede no coincidir con el ID del input
+        _id: expect.any(String),  // we don't know the id in advance
         ...newParking,
     });
   }, 50000);

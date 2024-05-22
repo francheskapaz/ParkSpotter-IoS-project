@@ -58,7 +58,25 @@ const parcheggioScheme = z.object({
     })).optional()
 });
 
+exports.validateParcheggio = function (object) {
+    const result = parcheggioScheme.safeParse(object);
+    if (!result.success) {
+        const errorMessages = result.error.errors.map(e => e.message);
+        return { success: false, error: errorMessages };
+    }
+    return { success: true, data: result.data };
+};
 
+exports.validatePartialParcheggio = function (object) {
+    const result = parcheggioScheme.partial().safeParse(object);
+    if (!result.success) {
+        const errorMessages = result.error.errors.map(e => e.message);
+        return { success: false, error: errorMessages };
+    }
+    return { success: true, data: result.data };
+};
+
+/*
 exports.validateParcheggio = function (object) {
     return parcheggioScheme.safeParse(object);
 };
@@ -67,3 +85,4 @@ exports.validateParcheggio = function (object) {
 exports.validatePartialParcheggio = function (object) {
     return parcheggioScheme.partial().safeParse(object);
 };
+*/
