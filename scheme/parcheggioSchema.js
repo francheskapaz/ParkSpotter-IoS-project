@@ -1,10 +1,10 @@
-const z = require('zod'); 
+const z = require('zod');
 
 const parcheggioScheme = z.object({
-    id: z.string({
-        invalid_type_error: 'id must be a string',
-        required_error: 'id is required'
-    }),
+    // id: z.string({
+    //     invalid_type_error: 'id must be a string',
+    //     required_error: 'id is required'
+    // }),
     name: z.string({
         invalid_type_error: 'name must be a string',
         required_error: 'name is required'
@@ -40,24 +40,24 @@ const parcheggioScheme = z.object({
         required_error: 'vehicleType is required'
     }),
 
-    nFree: z.number({
-        required_error: 'nFree is required'
-    }).int({
-        invalid_type_error: 'nFree must be an integer'
-    }),
-
-    reservations: z.array(z.object({
-        timeStart: z.string(),
-        timeEnd: z.string()
-    }))
+    // nFree: z.number({
+    //     required_error: 'nFree is required'
+    // }).int({
+    //     invalid_type_error: 'nFree must be an integer'
+    // }),
+    //
+    // reservations: z.array(z.object({
+    //     timeStart: z.string(),
+    //     timeEnd: z.string()
+    // }))
 });
 
 
-exports.validateParcheggio = function (object) {
+exports.validateParcheggio = function(object) {
     return parcheggioScheme.safeParse(object);
 };
 
 
-exports.validatePartialParcheggio = function (object) {
+exports.validatePartialParcheggio = function(object) {
     return parcheggioScheme.partial().safeParse(object);
 };

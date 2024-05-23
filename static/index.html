@@ -8,6 +8,7 @@
         <!-- Leaflet JS -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/script.js"></script>
 
         <title>Parkspotter</title>
 
@@ -15,16 +16,37 @@
     </head>
     <body>
         <h1>Parkspotter</h1>
+        <nav>
+            <div class="checkbox-container">
+                <label><input type="checkbox" id="car"> Automobili</label>
+                <label><input type="checkbox" id="bike"> Biciclette</label>
+                <label><input type="checkbox" id="motorbike"> Moto</label>
+            </div>
+            <div class="links">
+                <div id="auth" style="display:none">
+                    <a href="/user.html">Profile</a>
+                    <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
+                </div>
+                <div id="notauth">
+                    <a href="/signup.html">Sign-up</a>
+                    <a href="/login.html">Log-in</a>
+                </div>
+            </div>
+        </nav>
 
-        <div class="checkbox-container">
-            <label><input type="checkbox" id="car"> Automobili</label>
-            <label><input type="checkbox" id="bike"> Biciclette</label>
-            <label><input type="checkbox" id="motorbike"> Moto</label>
-            <!-- Add more checkboxes as needed for different points of interest -->
-        </div>
         <div id="map-container">
             <div id="map"></div>
         </div>
+        <script>
+        // Show links
+        getUserType()
+        .then((userType) => {
+            if (userType !== 'Unauthenticated') {
+                document.getElementById('auth').style.display = 'block';
+                document.getElementById('notauth').style.display = 'none';
+            }
+        })
+        </script>
         <script>
             $(document).ready(function() {
                 showCars();

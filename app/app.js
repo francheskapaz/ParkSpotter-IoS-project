@@ -1,6 +1,7 @@
 const path = require('path');
 const cors = require('cors')
 const express = require('express');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(express.json());
 /**
  * Serve static files for the front-end
  */
-app.use(express.static(path.join(__dirname, '..', 'static'),{extensions:['html']}));
+app.use(express.static(path.join(__dirname, '..', 'static')));
 
 
 /**
@@ -30,7 +31,7 @@ app.use(cors())
 /**
  * Log requests to console
  */
-app.use((req,res,next) => {
+app.use((req, res, next) => {
     console.log(req.method + ' ' + req.url)
     next()
 })
@@ -43,6 +44,7 @@ app.use('/api/v1/authentication', authentication);
 
 // Endpoint that require authentication
 app.use('/api/v1/users/:userId', tokenChecker);
+app.put('/api/v1/parkings', tokenChecker);
 
 /**
  * Resource routing

@@ -18,7 +18,7 @@
             <label for="usertype">User type:</label>
             <select id="usertype" name="usertype">
                 <option value="Consumer">Consumer</option>
-                <option value="Owner">Owner</option>
+                <option value="Proprietario">Proprietario</option>
             </select>
             <button type="submit">Signup</button>
         </form>
@@ -29,7 +29,7 @@
             e.preventDefault();
 
             let data = {
-                type: 'Consumer',
+                type: document.getElementById('usertype').value,
                 email: document.getElementById('email').value,
                 username: document.getElementById('username').value,
                 password: document.getElementById('password').value
@@ -47,7 +47,7 @@
             })
                 .then((res) => {
                     if (res.status === 201) {
-                        console.log(res.headers.get('location'));
+                        document.location = '/login.html';
                     }
                 })
 

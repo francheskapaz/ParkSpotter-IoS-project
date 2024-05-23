@@ -57,10 +57,7 @@ router.post('', async function(req, res) {
  */
 router.get('/:userId', async (req, res) => {
     if (req.params.userId === 'me') {
-        return res.status(301).json({
-            success: true,
-            resource: '/api/v1/users/' + req.loggedUser.id
-        });
+        req.params.userId = req.loggedUser.id;
     }
 
     // Only Admin can view other users
