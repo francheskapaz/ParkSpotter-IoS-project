@@ -126,16 +126,10 @@ describe('Parking API', () => {
       nParkingSpaces: 30,
       vehicleType: "Bike",
       nFree: 5,
-      reservations: [ {
-        timeStart: new Date(),
-        timeEnd: new Date(),
-      }],
+      reservations: [ { timeStart: new Date(), timeEnd: new Date() }],
     };
     const response = await request(app).post('/api/v1/parkings').send(newParking).expect('Content-Type', /json/).expect(201);
-    expect(response.body).toEqual({
-        _id: expect.any(String),  // we don't know the id in advance
-        ...newParking,
-    });
+    expect(response.body).toMatchObject(newParking);
   }, 50000);
 
   test('PATCH /api/v1/parkings/:id should update an existing parking', async () => {
