@@ -3,6 +3,7 @@ require('dotenv').config()
 const mongoose = require('mongoose');
 var Parking  = require('../app/models/parking.js')
 
+var Feedback = require('../app/models/feedback.js')
 
 
 // connect to database
@@ -10,7 +11,6 @@ mongoose.connect(process.env.DB_URL)
     .then( () => {
         console.log("Connected to Database");
     });
-
 
 // Add example parkings
 Parking.deleteMany({}) // Clear collection
@@ -69,3 +69,48 @@ Parking.deleteMany({}) // Clear collection
         console.error('Error:', error);
         process.exit(1);
     });
+
+Feedback.deleteMany({}) // Clear collection
+.then(() => {
+    console.log('Feedback collection cleared');
+    return Parking.find({}).limit(2);
+})
+.then(parking => {
+    if (!parking) {
+        throw new Error('No parkings found in the database');
+    }
+    const userId1 = '60c72b2f9b1d4c3b3c1a7b3f' //example of user ID
+    const userId2 = '60c72b2f9b1d4c3b3c1a7b4f'
+    const userId3 = '60c72b2f9b1d4c3b3c1a7b7b'
+    const parkingId1 = parking[0]._id
+    const parkingId2 = parking[1]._id
+
+    const feedbacks = [
+        new Feedback({
+            user_id: userId1,
+            parking_id: parkingId1,
+            score: 5,
+            comment: 'Great parking spot, very convenient!',
+            date: new Date('2024-05-06T10:00:00Z')
+        }),
+        new Feedback({
+            user_id: userId2,
+            parking_id: parkingId2,
+            score: 3,
+            comment: 'Good parking spot, but could be cleaner',
+            date: new Date('2024-05-06T15:00:00Z')
+        }),
+        new Feedback({
+            user_id: userId3,
+            parking_id: parkingId1,
+            score: 3,
+            comment: 'Average parking experience.',
+            date: new Date('2024-05-06T15:30:00Z')
+        })
+    ];
+    return Feedback.insertMany(feedbacks);
+})
+.then(feedbacks => {
+    console.log('Feedbacks saved successfully', feedbacks);
+    
+})
