@@ -1,16 +1,26 @@
 
 require('dotenv').config()
-const mongoose = require('mongoose');
-var Parking  = require('../app/models/parking.js')
 
+var Parking  = require('../app/models/parking.js')
 var Feedback = require('../app/models/feedback.js')
+
+const mongoose = require('mongoose');
+
+const DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+console.log('DB_URL:', DB_URL);
+
 
 
 // connect to database
-mongoose.connect(process.env.DB_URL)
-    .then( () => {
-        console.log("Connected to Database");
-    });
+mongoose.connect(DB_URL, {
+    serverSelectionTimeoutMS: 30000, // 30 segundos
+    socketTimeoutMS: 45000,
+})
+.then( () => {
+    console.log("Connected to Database");
+});
+
 
 // Add example parkings
 Parking.deleteMany({}) // Clear collection
@@ -63,7 +73,6 @@ Parking.deleteMany({}) // Clear collection
         return Parking.find({});
     }). then ((parkings) => {
         console.log('All parkings: ', parkings);
-        process.exit()
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -112,5 +121,13 @@ Feedback.deleteMany({}) // Clear collection
 })
 .then(feedbacks => {
     console.log('Feedbacks saved successfully', feedbacks);
-    
+    return Feedback.find({}).populate('parking_id');
 })
+. then (feedbacks => {
+    console.log('All parkings: ', feedbacks);
+    process.exit()
+})
+.catch((error) => {
+    console.error('Error:', error);
+    process.exit(1);
+});
