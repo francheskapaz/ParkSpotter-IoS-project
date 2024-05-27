@@ -43,7 +43,7 @@
       return {
         parkings: [],
         selectedParking: null,
-        editedParking: null,
+        editedParking: null
       };
     },
     created() {
@@ -82,13 +82,13 @@
         this.selectedParking = parking;
         this.editedParking = { ...parking }; 
       },
-      async saveEditedParking() {
+      async saveEditedParking(id) {
         try {
           const response = await axios.patch(`http://localhost:8080/api/v1/parkings/${this.editedParking._id}`, this.editedParking);
         
-          const index = this.parkings.findIndex(p => p._id === this.editedParking._id);
+          const index = this.parkings.findIndex(p => p._id === id);
           if (index !== -1) {
-            this.$set(this.parkings, index, response.data); 
+            this.parkings[index] = response.data;
             this.selectedParking = response.data; 
             this.editedParking = null; 
           }

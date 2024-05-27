@@ -22,7 +22,7 @@
     methods: {
       async fetchData() {
         try {
-          const response = await axios.get('http://localhost:8080/api/v1/parkings'); // Cambia esta URL a la de tu API
+          const response = await axios.get('http://localhost:8080/api/v1/parkings');
           this.data = response.data;
         } catch (error) {
           console.error('Error fetching data', error);

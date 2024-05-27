@@ -1,8 +1,8 @@
 const path = require('path');
 const cors = require('cors');
-
 const express = require('express');
 const { json } = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const { corsMiddleware } = require('../middlewares/cors.js');
@@ -17,7 +17,12 @@ app.use(cors())
 
 app.use(express.json());
 
-//app.use(corsMiddleware()) // Using the cors middleware to enable Cross-Origin Resource Sharing (CORS)
+app.use(bodyParser.json());
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+});
+
 app.use('/api/v1/parkings', parcheggiRouter) // Mounting the parcheggiRouter to handle requests for the '/apiParcheggi/parcheggi' endpoint
 
 module.exports =  app;

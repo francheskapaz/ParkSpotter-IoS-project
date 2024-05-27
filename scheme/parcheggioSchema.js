@@ -75,14 +75,3 @@ exports.validatePartialParcheggio = function (object) {
     }
     return { success: true, data: result.data };
 };
-
-/*
-exports.validateParcheggio = function (object) {
-    return parcheggioScheme.safeParse(object);
-};
-
-
-exports.validatePartialParcheggio = function (object) {
-    return parcheggioScheme.partial().safeParse(object);
-};
-*/
