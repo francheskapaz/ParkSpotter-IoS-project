@@ -58,7 +58,7 @@ parcheggiRouter.put('', async (req, res) => {
 
         parking = new Parking(req.body);
         parking = await parking.save();
-        return res.json({ success: true, message: 'Parking saved successfully' });
+        return res.json({ success: true, message: 'Parking saved successfully', parkingId: parking.id });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
