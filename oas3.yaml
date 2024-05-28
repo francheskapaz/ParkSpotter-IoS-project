@@ -282,6 +282,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /rents:
+    get:
+      summary: Get all rented parkings of the logged in user
+      parameters:
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rent'
+        '401':
+          description: No token provided
+    post:
+      summary: Rent a new parking
+      parameters:
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rent'
+      responses:
+        '200':
+          description: Rent saved successfully
+        '400':
+          description: parkingId is required
+        '401':
+          description: No token provided
+        '403':
+          description: Permission denied. Only Proprieatario and Admin can access this route
+  /rets/{rentId}:
+    delete:
+      summary: Delete the rent
+      parameters:
+        - name: rentId
+          in: path
+          required: true
+          description: ID of the rent to delete
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rent deleted successfully
+        '400':
+          description: rentId is required
+        '401':
+          description: No token provided
+        '403':
+          description: Permission denied. Only Proprieatario and Admin can access this route
+        '404':
+          description: Rent not found
 components:
   schemas:
     Parking:
@@ -423,3 +490,18 @@ components:
           type: number
           format: float
           description: Credit of the user, applicable if user type is "Proprietario"
+    Rent:
+      type: object
+      required:
+        - userId
+        - parkingId
+      properties:
+        rentId:
+          type: string
+          descriptio: ID of the rent
+        userId:
+          type: string
+          description: ID of the logged in user (owner of the parking)
+        parkingId:
+          type: string
+          description: ID of the parking to rent
