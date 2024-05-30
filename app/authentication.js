@@ -8,6 +8,9 @@ const bcrypt = require('bcrypt'); // used for password hashing
  * Authenticate the user and generate a new token
  */
 router.post('', async function(req, res) {
+    if (!req.body.password) {
+        return res.status(403).json({ success: false, message: 'Password field is required' });
+    }
 
     // Search the user in the database
     let user = await User.findOne({ username: req.body.username }).exec()
@@ -17,9 +20,6 @@ router.post('', async function(req, res) {
         return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    if (!req.body.password) {
-        return res.status(403).json({ success: false, message: 'Password field is required' });
-    }
     const passwordCorrect = await bcrypt.compare(req.body.password, user.password);
     if (!passwordCorrect) {
         return res.status(403).json({ success: false, message: 'Wrong password' });

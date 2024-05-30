@@ -12,12 +12,10 @@ describe('POST /api/v1/users', () => {
         jest.setTimeout(8000);
         jest.unmock('mongoose');
         app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb');
-        console.log('Database connected!');
     });
 
     afterAll(async () => {
         await mongoose.connection.close();
-        console.log('Database connection closed');
     });
 
     afterEach(async () => {
@@ -113,7 +111,6 @@ describe('GET /api/v1/users/:userId', () => {
         jest.setTimeout(8000);
         jest.unmock('mongoose');
         app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb');
-        console.log('Database connected!');
 
         // Create a test user
         user = new User({
@@ -138,7 +135,6 @@ describe('GET /api/v1/users/:userId', () => {
         // Clear the database
         await User.deleteMany({});
         await mongoose.connection.close();
-        console.log('Database connection closed');
     });
 
     test('GET /api/v1/users/:userId with valid token', async () => {
@@ -165,7 +161,6 @@ describe('DELETE /api/v1/users/:userId', () => {
         jest.setTimeout(8000);
         jest.unmock('mongoose');
         app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb');
-        console.log('Database connected!');
 
         // Create a test user
         user = new User({
@@ -181,7 +176,6 @@ describe('DELETE /api/v1/users/:userId', () => {
         // Clear the database
         await User.deleteMany({});
         await mongoose.connection.close();
-        console.log('Database connection closed');
     });
 
     test('DELETE /api/v1/users/:userId without valid token', async () => {
