@@ -39,6 +39,10 @@ router.post('', async function(req, res) {
         email: req.body.email
     });
 
+    // Set credibility for Consumer and credit for Proprietario
+    if (req.body.type === 'Consumer') user.credibility = 50;
+    else if (req.body.type === 'Proprietario') user.credit = 0;
+
     // Create password hash
     const hash = await bcrypt.hash(req.body.password, 10)
     if (hash) {
@@ -97,6 +101,37 @@ router.get('/:userId', async (req, res) => {
             email: user.email,
             dateOfBirth: user.dateOfBirth
         });
+    }
+});
+
+/*
+ * Update user
+ */
+router.patch('/:userId', async (req, res) => {
+    // Check authorization
+    if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
+        return res.status(403).json({ success: false, message: 'Permission denied' });
+    }
+
+    try {
+        let user = await User.findById(req.params.userId);
+
+        if (user) {
+            if (req.body.email) user.email = req.body.email;
+            if (req.body.password) user.password = req.body.password;
+            if (req.body.dateOfBirth) user.dateOfBirth = req.body.dateOfBirth;
+            if (req.loggedUser.type === 'Admin') {
+                if (req.body.credibility) user.credibility = req.body.credibility;
+                if (req.body.credit) user.credit = req.body.credit;
+            }
+            user = await user.save();
+
+            res.status(200).json({ success: true, message: 'User updated.' });
+        } else {
+            res.status(404).json({ success: false, message: `No user found with id ${req.params.userId}` });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 

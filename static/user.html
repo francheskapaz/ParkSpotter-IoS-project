@@ -4,19 +4,31 @@
         <script src="/script.js"></script>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body onload="showProprietario()">
+    <body onload="showUser()">
+        <a href="/" style="text-decoration: none;color: #333;"> <h1>Parkspotter</h1> </a>
+        <nav>
+            <div class="links">
+                <div id="auth" style="display:none">
+                    <a href="/user.html">Profilo</a>
+                    <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
+                </div>
+                <div id="notauth">
+                    <a href="/signup.html">Sign-up</a>
+                    <a href="/login.html">Log-in</a>
+                </div>
+            </div>
+        </nav>
 
-        <h1>Profilo</h1>
+        <h2>Profilo</h2>
 
-        <div>
-            ( info utente )
+        <div id="info">
         </div>
-        <h2 class="Proprietario">I miei Parcheggi</h2>
+        <h3 class="Proprietario">I miei Parcheggi</h3>
         <div id="parkings" class="Proprietario">
         </div>
         <br>
         <div id="newParking" class="Proprietario">
-            <h2>Nuovo parcheggio</h2>
+            <h3>Nuovo parcheggio</h3>
             <form action="" id="newParkingForm">
                 <label for="name">Nome</label>
                 <input type="text" id="name" name="name" placeholder="nome_parcheggio" required><br><br>
@@ -38,6 +50,9 @@
                 <button type="submit">Invia</button>
             </form>
         </div>
+        <script>
+        getInfo();
+        </script>
         <script>
         // Submit "newParkingForm"
         let newParkingForm = document.getElementById("newParkingForm");

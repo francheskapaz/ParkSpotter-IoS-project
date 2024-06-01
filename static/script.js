@@ -19,6 +19,17 @@ async function getUserType() {
     }
 }
 
+function showUser() {
+    getUserType()
+        .then((userType) => {
+            if (userType !== 'Unauthenticated') {
+                document.getElementById('auth').style.display = 'block';
+                document.getElementById('notauth').style.display = 'none';
+            }
+        })
+    showProprietario();
+}
+
 function showProprietario() {
     getUserType().then(userType => {
         if (userType !== 'Proprietario') return;
@@ -73,5 +84,80 @@ function showRents() {
                         parkingElement.innerHTML += ` <button type="button" onclick="deleteRent('${rent._id}')">Elimina</button>`;
                     })
             }
+        })
+}
+
+function getInfo() {
+    fetch('/api/v1/users/me', {
+        method: 'GET',
+        headers: new Headers({
+            'X-access-token': window.localStorage.getItem('token')
+        })
+    })
+        .then(res => {
+            return res.json();
+        })
+        .then(data => {
+            console.log(data)
+            let info = document.getElementById('info');
+
+            let type = document.createElement('div');
+            type.innerText = 'Utente: ' + data.type;
+            info.appendChild(type);
+
+            let username = document.createElement('div');
+            username.innerText = 'Username: ' + data.username;
+            info.appendChild(username);
+
+            let email = document.createElement('input');
+            let emaillabel = document.createElement('label');
+            email.type = 'text';
+            email.value = data.email;
+            email.name = 'email';
+            emaillabel.for = 'email';
+            emaillabel.innerText = 'Email: ';
+            info.appendChild(emaillabel);
+            info.appendChild(email);
+            info.appendChild(document.createElement('br'));
+
+            let password = document.createElement('input');
+            let passwordlabel = document.createElement('label');
+            password.type = 'password';
+            password.placeholder = 'new_password';
+            password.name = 'password';
+            passwordlabel.for = 'password';
+            passwordlabel.innerText = 'Password: ';
+            info.appendChild(passwordlabel);
+            info.appendChild(password);
+
+            if (data.type === 'Consumer') {
+                let credibility = document.createElement('div');
+                credibility.innerText = 'Credibility: ' + data.credibility;
+                info.appendChild(credibility);
+            } else if (data.type === 'Proprietario') {
+                let credit = document.createElement('div');
+                credit.innerText = 'Credit: ' + data.credit;
+                info.appendChild(credit);
+            }
+
+            let button = document.createElement('button');
+            button.innerText = 'Update profile';
+            newdata = { email: email.innerText }
+            if (password.value !== '') newdata.password = password.value;
+            button.onclick = function() {
+                fetch(data.self, {
+                    method: 'PATCH',
+                    headers: new Headers({
+                        'X-access-token': window.localStorage.getItem('token')
+                    }),
+                    body: JSON.stringify(newdata)
+                })
+                    .then(async (response) => {
+                        let resdata = await response.json();
+                        if (resdata.success) alert('Profilo aggiornato');
+                        else alert('Si è verificato un errore');
+                    })
+            }
+            info.appendChild(button);
         })
 }

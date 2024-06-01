@@ -14,8 +14,8 @@
 
         <link rel="stylesheet" href="style.css">
     </head>
-    <body>
-        <h1>Parkspotter</h1>
+    <body onload="showUser()">
+        <a href="/" style="text-decoration: none;color: #333;"> <h1>Parkspotter</h1> </a>
         <nav>
             <div class="checkbox-container">
                 <label><input type="checkbox" id="car"> Automobili</label>
@@ -24,7 +24,7 @@
             </div>
             <div class="links">
                 <div id="auth" style="display:none">
-                    <a href="/user.html">Profile</a>
+                    <a href="/user.html">Profilo</a>
                     <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
                 </div>
                 <div id="notauth">
@@ -37,16 +37,6 @@
         <div id="map-container">
             <div id="map"></div>
         </div>
-        <script>
-        // Show links
-        getUserType()
-        .then((userType) => {
-            if (userType !== 'Unauthenticated') {
-                document.getElementById('auth').style.display = 'block';
-                document.getElementById('notauth').style.display = 'none';
-            }
-        })
-        </script>
         <script>
             $(document).ready(function() {
                 showCars();
