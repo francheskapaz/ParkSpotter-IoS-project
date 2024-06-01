@@ -1,12 +1,17 @@
 
 require('dotenv').config()
-const mongoose = require('mongoose');
+
 var Parking  = require('../app/models/parking.js')
 
+const mongoose = require('mongoose');
+
+const DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+console.log('DB_URL:', DB_URL);
 
 
 // connect to database
-mongoose.connect(process.env.DB_URL)
+mongoose.connect(DB_URL)
     .then( () => {
         console.log("Connected to Database");
     });
@@ -37,7 +42,9 @@ Parking.deleteMany({}) // Clear collection
                     timeStart: new Date('2024-05-06T15:00:00Z'),
                     timeEnd: new Date('2024-05-06T15:30:00Z')
                 }
-            ]
+            ],
+            averageScore: 0
+
         });
         return parkingOne.save()
     }).then(() => {
@@ -55,7 +62,8 @@ Parking.deleteMany({}) // Clear collection
             nParkingSpaces: 26,
             vehicleType: "Bike",
             nFree: 12,
-            reservations: []
+            reservations: [],
+            averageScore: 0
         });
         return parkingTwo.save()
     }).then(() => {
