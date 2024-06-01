@@ -2,16 +2,50 @@ const request = require('supertest');
 const app = require('./app.js');
 const mongoose = require('mongoose');
 const Feedback = require('./models/feedback.js');
-const { use } = require('./parcheggi.js');
 const parking = require('./models/parking.js');
 const common = require('mocha/lib/interfaces/common');
-//DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 require('dotenv').config();
+
+
+describe('GET /api/v1/feedback/:id', () => {    
+    beforeAll(async () => {
+        jest.setTimeout(10000);
+        app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+        console.log('DB connected');
+    }); 
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Feedback.deleteMany({});
+    });
+
+    test('GET /api/v1/feedback/:id with valid id', async () => {
+        const initialFeedback = new Feedback({
+            user_id: new mongoose.Types.ObjectId(),
+            parking_id: new mongoose.Types.ObjectId(),
+            score: 4,
+            comment: 'Good parking!'
+        });
+        await initialFeedback.save();
+
+        const response = await request(app)
+            .get(`/api/v1/feedback/${initialFeedback._id}`);
+        console.log(response.body);
+
+        expect(response.statusCode).toBe(200);
+    });
+
+});
+
+
 
 describe('POST /api/v1/feedback', () => {
     beforeAll(async () => {
         jest.setTimeout(10000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb')
+        app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
         console.log('DB connected');
         });
 
@@ -46,7 +80,7 @@ describe('POST /api/v1/feedback', () => {
 describe('PATCH /api/v1/feedback/:id', () => {
         beforeAll(async () => {
             jest.setTimeout(10000);
-            app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb')
+            app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
             console.log('DB connected');
         });
 
@@ -86,5 +120,31 @@ describe('PATCH /api/v1/feedback/:id', () => {
 
 });
 
-
-
+describe('DELETE /api/v1/feedback/:id', () => {
+    beforeAll(async () => {
+        jest.setTimeout(10000);
+        app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+        console.log('DB connected');
+    });
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Feedback.deleteMany({});
+    });
+    test('DELETE /api/v1/feedback/:id with valid id', async () => {
+        const initialFeedback = new Feedback({
+            user_id: new mongoose.Types.ObjectId(),
+            parking_id: new mongoose.Types.ObjectId(),
+            score: 4,
+            comment: 'Good parking!'
+        });
+        await initialFeedback.save();
+        const response = await request(app)
+            .delete(`/api/v1/feedback/${initialFeedback._id}`);
+        console.log(response.body);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe('Feedback deleted successfully');
+    });
+});

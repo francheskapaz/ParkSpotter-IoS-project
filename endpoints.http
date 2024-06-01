@@ -1,0 +1,27 @@
+
+### Get all feedbacks - just to test
+GET http://localhost:8080/api/v1/feedback
+
+### Get one feedback by its id 
+GET http://localhost:8080/api/v1/feedback/665ac4eeb73125929a784e8d
+
+
+### Post a new feedback
+POST http://localhost:8080/api/v1/feedback
+Content-Type: application/json
+
+{
+    "user_id": "60c72b2f9b1d4c3b3c1a7b4f",
+    "parking_id": "665ac2546559fde90f047c47",
+    "score": 5 ,
+    "comment": "Great parking spot",
+    "date": "2021-06-01T00:00:00.000Z"
+}
+
+### Delete a feedback by its id
+DELETE http://localhost:8080/api/v1/feedback/665ac4eeb73125929a784e8d
+Content-Type: application/json
+
+
+
+   

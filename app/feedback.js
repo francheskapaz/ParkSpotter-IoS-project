@@ -61,9 +61,38 @@ router.patch('/:id', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-    
+    try{
+        const foundFeedback = await Feedback.findById(req.params.id);
+        if (foundFeedback) {
+            return res.json(foundFeedback);
+        } else {
+            res.status(404).json({message: 'Feedback not found'})
+        }
+    } catch (error) {
+        res.status(500). json({ error: 'Internal server error'})
+    }
+});
 
 
+router.get('/', async (req, res) => {
+    try {
+        res.json(await Feedback.find()); 
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
+        if (deletedFeedback) {
+            res.json({ message: 'Feedback deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Feedback not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
