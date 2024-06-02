@@ -1,3 +1,25 @@
+// Funzione per creare una riga della tabella
+function creaRigaTabella(parcheggio) {
+    return `
+        <tr>
+            <td>${parcheggio.id}</td>
+            <td>${parcheggio.nome}</td>
+            <td>${parcheggio.disponibile ? 'Sì' : 'No'}</td>
+        </tr>
+    `;
+}
+
+// Funzione per popolare le opzioni del menu a discesa
+function popolaOpzioniMenu(parcheggi) {
+    const select = document.getElementById('parcheggio');
+    parcheggi.forEach(parcheggio => {
+        const option = document.createElement('option');
+        option.value = parcheggio.id;
+        option.text = parcheggio.nome;
+        select.appendChild(option);
+    });
+}
+
 // Funzione per caricare i parcheggi dal backend e popolare la tabella
 async function caricaParcheggi() {
     try {
@@ -8,15 +30,12 @@ async function caricaParcheggi() {
         tableBody.innerHTML = '';
 
         parcheggi.forEach(parcheggio => {
-            const row = `
-                <tr>
-                    <td>${parcheggio.id}</td>
-                    <td>${parcheggio.nome}</td>
-                    <td>${parcheggio.disponibile ? 'Sì' : 'No'}</td>
-                </tr>
-            `;
+            const row = creaRigaTabella(parcheggio);
             tableBody.innerHTML += row;
         });
+
+        // Popola le opzioni del menu a discesa
+        popolaOpzioniMenu(parcheggi);
     } catch (error) {
         console.error('Si è verificato un errore durante il caricamento dei parcheggi:', error);
     }

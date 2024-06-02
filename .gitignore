@@ -1,0 +1,25 @@
+# .gitignore
+
+# Ignora la cartella node_modules
+node_modules/
+
+# Ignora il file di ambiente
+.env
+
+# Ignora la cartella dist
+dist/
+
+# Ignora la cartella .cache
+.cache/
+
+# Ignora i file di log
+*.log
+
+# Ignora i file .DS_Store 
+.DS_Store
+
+# Ignora la cartella build
+/build/
+
+# Ignora la cartella out
+/out/

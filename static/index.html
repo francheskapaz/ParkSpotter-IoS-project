@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenotazione Parcheggi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Prenotazione Parcheggi</h1>
+    </header>
+    
+    <main>
+        <form id="prenotazione-form">
+            <div>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div>
+                <label for="parcheggio">Parcheggio:</label>
+                <select id="parcheggio" name="parcheggio" required>
+                    <!-- Opzioni dei parcheggi saranno popolate dinamicamente da JavaScript -->
+                </select>
+            </div>
+            <button type="submit">Prenota</button>
+        </form>
+
+        <table id="parcheggi-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Disponibile</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Le righe saranno popolate dinamicamente da JavaScript -->
+            </tbody>
+        </table>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
