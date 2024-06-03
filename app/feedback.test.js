@@ -2,13 +2,10 @@ const request = require('supertest');
 const app = require('./app.js');
 const mongoose = require('mongoose');
 const Feedback = require('./models/feedback.js');
-const parking = require('./models/parking.js');
-const common = require('mocha/lib/interfaces/common');
 DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 require('dotenv').config();
 
-
-describe('GET /api/v1/feedback/:id', () => {    
+describe('GET /api/v2/feedback/:id', () => {    
     beforeAll(async () => {
         jest.setTimeout(10000);
         app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -22,7 +19,7 @@ describe('GET /api/v1/feedback/:id', () => {
         await Feedback.deleteMany({});
     });
 
-    test('GET /api/v1/feedback/:id with valid id', async () => {
+    test('GET /api/v2/feedback/:id with valid id', async () => {
         const initialFeedback = new Feedback({
             user_id: new mongoose.Types.ObjectId(),
             parking_id: new mongoose.Types.ObjectId(),
@@ -32,7 +29,7 @@ describe('GET /api/v1/feedback/:id', () => {
         await initialFeedback.save();
 
         const response = await request(app)
-            .get(`/api/v1/feedback/${initialFeedback._id}`);
+            .get(`/api/v2/feedback/${initialFeedback._id}`);
         console.log(response.body);
 
         expect(response.statusCode).toBe(200);
@@ -42,7 +39,7 @@ describe('GET /api/v1/feedback/:id', () => {
 
 
 
-describe('POST /api/v1/feedback', () => {
+describe('POST /api/v2/feedback', () => {
     beforeAll(async () => {
         jest.setTimeout(10000);
         app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -57,12 +54,12 @@ describe('POST /api/v1/feedback', () => {
             await Feedback.deleteMany({});
         });
 
-        test('POST /api/v1/feedback with valid data', async () => {
+        test('POST /api/v2/feedback with valid data', async () => {
             const validUserId = new mongoose.Types.ObjectId();
             const validParkingId = new mongoose.Types.ObjectId();
             const response = await request(app)
 
-                .post('/api/v1/feedback')
+                .post('/api/v2/feedback')
                 .send({
                     user_id: validUserId,  
                     parking_id: validParkingId,
@@ -77,7 +74,7 @@ describe('POST /api/v1/feedback', () => {
     
 });
 
-describe('PATCH /api/v1/feedback/:id', () => {
+describe('PATCH /api/v2/feedback/:id', () => {
         beforeAll(async () => {
             jest.setTimeout(10000);
             app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -92,7 +89,7 @@ describe('PATCH /api/v1/feedback/:id', () => {
             await Feedback.deleteMany({});
         });
 
-        test('PATCH /api/v1/feedback/:id with valid data', async () => {
+        test('PATCH /api/v2/feedback/:id with valid data', async () => {
             const initialFeedback = new Feedback({
                 user_id: new mongoose.Types.ObjectId(),
                 parking_id: new mongoose.Types.ObjectId(),
@@ -107,7 +104,7 @@ describe('PATCH /api/v1/feedback/:id', () => {
             };
 
             const response = await request(app)
-                .patch(`/api/v1/feedback/${initialFeedback._id}`)
+                .patch(`/api/v2/feedback/${initialFeedback._id}`)
                 .send(updatedFeedbackData);
             
             console.log(response.body);
@@ -120,7 +117,7 @@ describe('PATCH /api/v1/feedback/:id', () => {
 
 });
 
-describe('DELETE /api/v1/feedback/:id', () => {
+describe('DELETE /api/v2/feedback/:id', () => {
     beforeAll(async () => {
         jest.setTimeout(10000);
         app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -133,7 +130,7 @@ describe('DELETE /api/v1/feedback/:id', () => {
     afterEach(async () => {
         await Feedback.deleteMany({});
     });
-    test('DELETE /api/v1/feedback/:id with valid id', async () => {
+    test('DELETE /api/v2/feedback/:id with valid id', async () => {
         const initialFeedback = new Feedback({
             user_id: new mongoose.Types.ObjectId(),
             parking_id: new mongoose.Types.ObjectId(),
@@ -142,7 +139,7 @@ describe('DELETE /api/v1/feedback/:id', () => {
         });
         await initialFeedback.save();
         const response = await request(app)
-            .delete(`/api/v1/feedback/${initialFeedback._id}`);
+            .delete(`/api/v2/feedback/${initialFeedback._id}`);
         console.log(response.body);
         expect(response.statusCode).toBe(200);
         expect(response.body.message).toBe('Feedback deleted successfully');

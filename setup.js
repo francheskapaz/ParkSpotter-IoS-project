@@ -13,7 +13,7 @@ console.log('DB_URL:', DB_URL);
 
 // connect to database
 mongoose.connect(DB_URL, {
-    serverSelectionTimeoutMS: 30000, // 30 segundos
+    serverSelectionTimeoutMS: 30000, // 30 seconds
     socketTimeoutMS: 45000,
 })
 .then( () => {
