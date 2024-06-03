@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  version: 1.0
+  version: 2.0
   title: ParkSpotter API
-  description: API for managing parkings.
+  description: API for managing parkings
 servers:
-  - url: http://localhost:8080/api/v1
+  - url: http://localhost:8080/api/v2
     description: Localhost
 paths:
   /parkings:
@@ -166,7 +166,7 @@ components:
           description: Hourly fee
         maxStop:
           type: number
-          description: Maximum stop time in minutes
+          description: Maximum stop time in hours
         open:
           type: boolean
           description: Indicate if the parking is available
@@ -203,6 +203,9 @@ components:
                 format: date-time
                 description: Reservation end time
           description: Parking reservations
+        averageScore:
+          type: number
+          description: Average score of feedback given by users  
     PartialParking:
       type: object
       properties:
@@ -217,7 +220,7 @@ components:
           description: Hourly fee
         maxStop:
           type: number
-          description: Maximum stop time in minutes
+          description: Maximum stop time in hours
         open:
           type: boolean
           description: Indicate if the parking is available
@@ -254,6 +257,9 @@ components:
                 format: date-time
                 description: Reservation end time
           description: Parking reservations
+        averageScore:
+          type: number
+          description: Average score of feedback given by users  
     ErrorResponse:
       type: object
       properties:

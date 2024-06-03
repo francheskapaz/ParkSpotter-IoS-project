@@ -1,12 +1,10 @@
 
 require('dotenv').config()
 
-var Parking  = require('../app/models/parking.js')
-
+var Parking  = require('./app/models/parking.js')
 const mongoose = require('mongoose');
 
-const DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-
+const DB_URL = process.env.DB_URL;
 console.log('DB_URL:', DB_URL);
 
 
