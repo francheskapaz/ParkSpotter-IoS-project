@@ -4,10 +4,10 @@ const  Parking  = require('./models/parking.js');
 
 // Create a new parking
 router.post('/', async (req, res) => {
-    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore } = req.body;
+    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore, totalRevenue } = req.body;
 
     // Validation of required fields
-    const requiredFields = ['name', 'fee', 'maxStop', 'open', 'coordinates', 'nParkingSpaces', 'vehicleType', 'nFree', 'averageScore'];
+    const requiredFields = ['name', 'fee', 'maxStop', 'open', 'coordinates', 'nParkingSpaces', 'vehicleType', 'nFree', 'averageScore', 'totalRevenue'];
     const missingFields = requiredFields.filter(field => req.body[field] === undefined);
     if (missingFields.length > 0) {
         return res.status(400).json({ error: `Missing required fields: ${missingFields.join(', ')}` });
@@ -22,7 +22,8 @@ router.post('/', async (req, res) => {
         const newParking = new Parking({  
             name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, 
             reservations: reservations || [], //Default value if not provided
-            averageScore: averageScore || 0 //Default value if not provided
+            averageScore: averageScore || 0, //Default value if not provided
+            totalRevenue: totalRevenue || 0 //Default value if not provided
         });
         await newParking.save();
         res.status(201).json({ message: 'Parking created successfully', parking: newParking});
@@ -34,12 +35,12 @@ router.post('/', async (req, res) => {
 // Update an existing parking
 router.patch('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore } = req.body;
+    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore, totalRevenue } = req.body;
 
     try {
         const updateParking = await Parking.findByIdAndUpdate(
             id,
-            { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore },
+            { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore, totalRevenue },
             { new: true, runValidators: true }
         );
 

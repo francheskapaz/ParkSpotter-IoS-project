@@ -16,7 +16,8 @@ const ParkingSchema = new Schema({
         timeStart: { type: Date, default: Date.now },
         timeEnd: { type: Date, default: Date.now }
     }],
-    averageScore: { type: Number, default: 0 }
+    averageScore: { type: Number, default: 0 },
+    totalRevenue: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('Parking', ParkingSchema);
