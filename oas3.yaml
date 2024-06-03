@@ -59,10 +59,60 @@ paths:
           description: Successful operation
         '301':
           description: Redirect to the logged user's info
+        '401':
+          description: 'Authentication token not provided'
         '403':
           description: Permission denied
         '404':
           description: User not found
+    patch:
+      summary: Update user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: 'Email of the user'
+                password:
+                  type: string
+                  description: 'Password of the user'
+                dateOfBirth:
+                  type: string
+                  format: date
+                  description: 'Date of birth of the user'
+                credibility:
+                  type: number
+                  format: float
+                  description: Credibility of the user, applicable if user type is "Consumer"
+                credit:
+                  type: number
+                  format: float
+                  description: Credit of the user, applicable if user type is "Proprietario"
+      responses:
+        '200':
+          description: 'User updated successfully'
+        '401':
+          description: 'Authentication token not provided'
+        '403':
+          description: 'Permission denied'
+        '404':
+          description: 'User not found'
     delete:
       summary: Delete user
       parameters:
@@ -79,6 +129,8 @@ paths:
       responses:
         '200':
           description: User deleted
+        '401':
+          description: 'Authentication token not provided'
         '403':
           description: Permission denied
         '404':
@@ -496,9 +548,6 @@ components:
         - userId
         - parkingId
       properties:
-        rentId:
-          type: string
-          descriptio: ID of the rent
         userId:
           type: string
           description: ID of the logged in user (owner of the parking)
