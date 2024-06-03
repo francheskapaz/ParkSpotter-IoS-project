@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Management System</title>
+    <style>
+        /* Estilos CSS */
+        .parking {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parking Management System</h1>
+    <div id="parkingList"></div>
+    <div id="editFormContainer" style="display: none;">
+        <h2>Edit Parking</h2>
+        <form id="editForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
+            <label for="fee">Fee:</label>
+            <input type="number" id="fee" name="fee" required><br>
+            <label for="maxStop">Max Stop:</label>
+            <input type="number" id="maxStop" name="maxStop" required><br>
+            <label for="open">Open:</label>
+            <input type="checkbox" id="open" name="open"><br>
+            <label for="nord">Coordinates Nord:</label>
+            <input type="number" id="nord" name="nord" required><br>
+            <label for="est">Coordinates Est:</label>
+            <input type="number" id="est" name="est" required><br>
+            <label for="nParkingSpaces">Number of Parking Spaces:</label>
+            <input type="number" id="nParkingSpaces" name="nParkingSpaces" required><br>
+            <label for="vehicleType">Vehicle Type:</label>
+            <input type="text" id="vehicleType" name="vehicleType" required><br>
+            <label for="nFree">Free Spaces:</label>
+            <input type="number" id="nFree" name="nFree" required><br>
+            <label for="averageScore">Average Score:</label>
+            <input type="number" step="0.1" id="averageScore" name="averageScore" required><br>
+            <label for="totalRevenue">Total Revenue:</label>
+            <input type="number" id="totalRevenue" name="totalRevenue" required><br>
+            <button type="submit">Save</button>
+            <button type="button" id="cancelEdit">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        let currentEditId = null;
+
+        async function getParkings() {
+            try {
+                const response = await fetch('/api/parkings');
+                const data = await response.json();
+                displayParkings(data);
+            } catch (error) {
+                console.error('Error fetching parkings:', error);
+            }
+        }
+
+        function displayParkings(parkings) {
+            const parkingListElement = document.getElementById('parkingList');
+            parkingListElement.innerHTML = '';
+
+            parkings.forEach(parking => {
+                const parkingElement = createParkingElement(parking);
+                parkingListElement.appendChild(parkingElement);
+            });
+        }
+
+        function createParkingElement(parking) {
+            const parkingElement = document.createElement('div');
+            parkingElement.classList.add('parking');
+
+            const detailsHTML = `
+                <p><strong>Coordinates:</strong> ${parking.coordinates.nord}, ${parking.coordinates.est}</p>
+                <p><strong>Number of Parking Spaces:</strong> ${parking.nParkingSpaces}</p>
+                <p><strong>Vehicle Type:</strong> ${parking.vehicleType}</p>
+                <p><strong>Free Spaces:</strong> ${parking.nFree}</p>
+                <p><strong>Reservations:</strong> ${parking.reservations.length}</p>
+                <p><strong>Average Score:</strong> ${parking.averageScore}</p>
+                <p><strong>Total Revenue:</strong> ${parking.totalRevenue}</p>
+            `;
+
+            parkingElement.innerHTML = `
+                <h2>${parking.name}</h2>
+                <p><strong>Open:</strong> ${parking.open ? 'Yes' : 'No'}</p>
+                <p><strong>Fee:</strong> $${parking.fee}</p>
+                <button class="viewDetailsBtn">View details</button>
+                <button class="editBtn">Edit</button>
+                <button class="deleteBtn">Delete</button>
+                <div class="details">${detailsHTML}</div>
+            `;
+
+            const viewDetailsBtn = parkingElement.querySelector('.viewDetailsBtn');
+            viewDetailsBtn.addEventListener('click', () => {
+                const details = parkingElement.querySelector('.details');
+                details.style.display = details.style.display === 'none' ? 'block' : 'none';
+            });
+
+            const editBtn = parkingElement.querySelector('.editBtn');
+            editBtn.addEventListener('click', () => {
+                currentEditId = parking._id;
+                fillEditForm(parking);
+                document.getElementById('editFormContainer').style.display = 'block';
+            });
+
+            const deleteBtn = parkingElement.querySelector('.deleteBtn');
+            deleteBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to delete this parking?')) {
+                    await deleteParking(parking._id);
+                    getParkings();
+                }
+            });
+
+            return parkingElement;
+        }
+
+        async function deleteParking(id) {
+            try {
+                await fetch(`/api/parkings/${id}`, {
+                    method: 'DELETE',
+                });
+            } catch (error) {
+                console.error('Error deleting parking:', error);
+            }
+        }
+
+        function fillEditForm(parking) {
+            document.getElementById('name').value = parking.name;
+            document.getElementById('fee').value = parking.fee;
+            document.getElementById('maxStop').value = parking.maxStop;
+            document.getElementById('open').checked = parking.open;
+            document.getElementById('nord').value = parking.coordinates.nord;
+            document.getElementById('est').value = parking.coordinates.est;
+            document.getElementById('nParkingSpaces').value = parking.nParkingSpaces;
+            document.getElementById('vehicleType').value = parking.vehicleType;
+            document.getElementById('nFree').value = parking.nFree;
+            document.getElementById('averageScore').value = parking.averageScore;
+            document.getElementById('totalRevenue').value = parking.totalRevenue;
+        }
+
+        document.getElementById('editForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const updatedParking = {
+                name: document.getElementById('name').value,
+                fee: document.getElementById('fee').value,
+                maxStop: document.getElementById('maxStop').value,
+                open: document.getElementById('open').checked,
+                coordinates: {
+                    nord: document.getElementById('nord').value,
+                    est: document.getElementById('est').value
+                },
+                nParkingSpaces: document.getElementById('nParkingSpaces').value,
+                vehicleType: document.getElementById('vehicleType').value,
+                nFree: document.getElementById('nFree').value,
+                averageScore: document.getElementById('averageScore').value,
+                totalRevenue: document.getElementById('totalRevenue').value,
+            };
+            await updateParking(currentEditId, updatedParking);
+            document.getElementById('editFormContainer').style.display = 'none';
+            getParkings();
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', () => {
+            document.getElementById('editFormContainer').style.display = 'none';
+        });
+
+        async function updateParking(id, updatedParking) {
+            try {
+                await fetch(`/api/parkings/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedParking),
+                });
+            } catch (error) {
+                console.error('Error updating parking:', error);
+            }
+        }
+
+        // Inicializar la carga de estacionamientos
+        getParkings();
+    </script>
+</body>
+</html>
