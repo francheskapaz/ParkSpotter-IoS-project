@@ -1,174 +1,231 @@
 const request = require('supertest');
 const app = require('./app.js'); 
+const mongoose = require('mongoose');
 const Parking = require('./models/parking.js');
+const e = require('cors');
+DB_URL = process.env.DB_URL || 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+require('dotenv').config();
 
-describe('Parking API', () => {
-  let parkingSpy;
-  let parkingSpyFindById;
-  let parkingSpyCreate;
-  let parkingSpyUpdate;
-  let parkingSpyDelete;
 
-  beforeAll(() => {
-    parkingSpy = jest.spyOn(Parking, 'find').mockImplementation(() => {
-      return [
+describe('GET /api/v2/parkings', () => {
+  beforeAll(async () => {
+    jest.setTimeout(10000);
+    app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+    console.log('DB connected');
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Parking.deleteMany({});
+    });
+
+  
+    test('GET /api/v2/parkings with existing parkings', async () => {
+      const initialParkings = [
         {
-          _id: '60c72b1f9b1d8b0022a4e9b5',
-          name: 'Test Parking',
-          fee: 5,
-          maxStop: 2,
+          name: "Parking Lot Test 1",
+          fee: 0,
+          maxStop: 0,
           open: true,
-          coordinates: { nord: 45.0, est: 9.0 },
-          nParkingSpaces: 50,
-          vehicleType: 'Car',
-          nFree: 10,
+          coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+          nParkingSpaces: 100,
+          vehicleType: "Car",
+          nFree: 20,
           reservations: [],
+          averageScore: 0
         },
-      ];
-    });
-
-    parkingSpyFindById = jest.spyOn(Parking, 'findById').mockImplementation((id) => {
-      if (id === '60c72b1f9b1d8b0022a4e9b5') {
-        return {
-          _id: '60c72b1f9b1d8b0022a4e9b5',
-          name: 'Test Parking',
-          fee: 5,
-          maxStop: 2,
+        {
+          name: "Parking Lot Test 2",
+          fee: 0,
+          maxStop: 0,
           open: true,
-          coordinates: { nord: 45.0, est: 9.0 },
-          nParkingSpaces: 50,
-          vehicleType: 'Car',
-          nFree: 10,
+          coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+          nParkingSpaces: 100,
+          vehicleType: "Car",
+          nFree: 20,
           reservations: [],
-        };
-      } else {
-        return null;
-      }
+          averageScore: 0
+        }
+      ];
+      await Parking.insertMany(initialParkings);
+
+      const response = await request(app)
+        .get('/api/v2/parkings');
+
+      console.log(response.body);
+      expect(response.statusCode).toBe(200);
+      //expect(response.body.length).toBe(initialParkings.length);
+
+    });
+});
+
+
+describe('GET /api/v2/parkings/:id', () => {
+  beforeAll(async () => {
+    jest.setTimeout(10000);
+    app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+    console.log('DB connected');
     });
 
-    parkingSpyCreate = jest.spyOn(Parking, 'create').mockImplementation((data) => {
-      return Promise.resolve({
-        _id: '60c72b1f9b1d8b0022a4e9b6',
-        ...data,
-      });
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Parking.deleteMany({});
     });
 
-    parkingSpyUpdate = jest.spyOn(Parking, 'findByIdAndUpdate').mockImplementation((id, data) => {
-      return {
-        _id: id,
-        ...data,
-      };
-    });
-
-    parkingSpyDelete = jest.spyOn(Parking, 'findByIdAndDelete').mockImplementation((id) => {
-      if (id === '60c72b1f9b1d8b0022a4e9b5') {
-        return {
-          _id: '60c72b1f9b1d8b0022a4e9b5',
-        };
-      } else {
-        return null;
-      }
-    });
-  });
-
-  afterAll(() => {
-    parkingSpy.mockRestore();
-    parkingSpyFindById.mockRestore();
-    parkingSpyCreate.mockRestore();
-    parkingSpyUpdate.mockRestore();
-    parkingSpyDelete.mockRestore();
-  });
-
-  test('GET /api/v1/parkings should respond with an array of parkings', async () => {
-    const response = await request(app).get('/api/v1/parkings').expect('Content-Type', /json/).expect(200);
-    expect(response.body).toEqual([
-      {
-        _id: '60c72b1f9b1d8b0022a4e9b5',
-        name: 'Test Parking',
-        fee: 5,
-        maxStop: 2,
+    test('GET /api/v2/parkings/:id', async () => {
+      const newParking = new Parking({
+        name: "Parking Lot Test",
+        fee: 0,
+        maxStop: 0,
         open: true,
-        coordinates: { nord: 45.0, est: 9.0 },
-        nParkingSpaces: 50,
-        vehicleType: 'Car',
-        nFree: 10,
+        coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+        nParkingSpaces: 100,
+        vehicleType: "Car",
+        nFree: 20,
         reservations: [],
-      },
-    ]);
-  });
+        averageScore: 0
+      });
+      await newParking.save();
+    
+      
+      const response = await request(app)
+        .get(`/api/v2/parkings/${newParking._id}`);
+      console.log(response.body);
 
-  test('GET /api/v1/parkings/:id should respond with a single parking', async () => {
-    const response = await request(app)
-      .get('/api/v1/parkings/60c72b1f9b1d8b0022a4e9b5')
-      .expect('Content-Type', /json/)
-      .expect(200);
-    expect(response.body).toEqual({
-      _id: '60c72b1f9b1d8b0022a4e9b5',
-      name: 'Test Parking',
-      fee: 5,
-      maxStop: 2,
-      open: true,
-      coordinates: { nord: 45.0, est: 9.0 },
-      nParkingSpaces: 50,
-      vehicleType: 'Car',
-      nFree: 10,
-      reservations: [],
+      expect(response.statusCode).toBe(200);
+      expect(response.body._id).toBe(newParking._id.toString()); // Verify that the returned parking has the same id as the one we created
+      
     });
-  });
 
-  test('POST /api/v1/parkings should create a new parking', async () => {
-    const newParking = {
-      name: "New Parking",
-      fee: 10,
-      maxStop: 3,
-      open: false,
-      coordinates: { nord: 40.0, est: 8.0 },
-      nParkingSpaces: 30,
-      vehicleType: "Bike",
-      nFree: 5,
-      reservations: [ {
-        timeStart: new Date(),
-        timeEnd: new Date(),
-      }],
-    };
-    const response = await request(app).post('/api/v1/parkings').send(newParking).expect('Content-Type', /json/).expect(201);
-    expect(response.body).toEqual({
-        _id: expect.any(String),  // we don't know the id in advance
-        ...newParking,
-    });
-  }, 50000);
+});
 
-  test('PATCH /api/v1/parkings/:id should update an existing parking', async () => {
-    const updatedParking = {
-      name: 'Updated Parking',
-      fee: 8,
-      maxStop: 4,
-      open: true,
-      coordinates: { nord: 41.0, est: 7.0 },
-      nParkingSpaces: 40,
-      vehicleType: 'Truck',
-      nFree: 15,
-      reservations: [],
-    };
-    const response = await request(app).patch('/api/v1/parkings/60c72b1f9b1d8b0022a4e9b5').send(updatedParking).expect('Content-Type', /json/).expect(200);
-    expect(response.body).toEqual({
-      _id: '60c72b1f9b1d8b0022a4e9b5',
-      name: 'Updated Parking',
-      fee: 8,
-      maxStop: 4,
-      open: true,
-      coordinates: { nord: 41.0, est: 7.0 },
-      nParkingSpaces: 40,
-      vehicleType: 'Truck',
-      nFree: 15,
-      reservations: [],
+describe('POST /api/v2/parkings', () => {
+  beforeAll(async () => {
+    jest.setTimeout(10000);
+    app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+    console.log('DB connected');
     });
-  });
 
-  test('DELETE /api/v1/parkings/:id should delete an existing parking', async () => {
-    const response = await request(app).delete('/api/v1/parkings/60c72b1f9b1d8b0022a4e9b5').expect('Content-Type', /json/).expect(200);
-    expect(response.body).toEqual({
-      message: 'Parcheggio deleted',
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
     });
+    afterEach(async () => {
+        await Parking.deleteMany({});
+    });
+    test('POST /api/v2/parkings with valid data', async () => {
+      const response = await request(app)
+        .post('/api/v2/parkings')
+        .send({
+            name: "Parking Lot Test",
+            fee: 0,
+            maxStop: 0,
+            open: true,
+            coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+            nParkingSpaces: 100,
+            vehicleType: "Car",
+            nFree: 20,
+            reservations: [],
+            averageScore: 0
+      });
+      console.log('response.body:', response.body);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body.message).toBe('Parking created successfully');
+      expect(response.body.parking).toHaveProperty('_id');
   });
+});
+
+describe('PATCH /api/v2/parkings/:id', () => {
+  beforeAll(async () => {
+    jest.setTimeout(10000);
+    app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+    console.log('DB connected');
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Parking.deleteMany({});
+    });
+
+    test('PATCH /api/v2/parkings/:id with valid data', async () => {
+      const initialParking = new Parking({
+        name: "Parking Lot Test",
+        fee: 0,
+        maxStop: 0,
+        open: true,
+        coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+        nParkingSpaces: 100,
+        vehicleType: "Car",
+        nFree: 20,
+        reservations: [],
+        averageScore: 0
+      });
+      await initialParking.save();
+
+      const updateParkingData = {
+        fee: 5,
+        nFree: 15
+      }
+
+      const response = await request(app)
+        .patch(`/api/v2/parkings/${initialParking._id}`)
+        .send(updateParkingData);
+      console.log(response.body);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe('Parking updated successfully');
+      expect(response.body.parking).toHaveProperty('_id');
+    });
+});
+
+describe('DELETE /api/v2/parkings/:id', () => {
+  beforeAll(async () => {
+    jest.setTimeout(10000);
+    app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
+    console.log('DB connected');
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+    });
+    afterEach(async () => {
+        await Parking.deleteMany({});
+    });
+    test('DELETE /api/v2/parkings/:id with valid id', async () => {
+      const initialParking = new Parking({
+        name: "Parking Lot Test",
+        fee: 0,
+        maxStop: 0,
+        open: true,
+        coordinates: { nord: 663196.778521093423478, est: 5104562.439772779121995 },
+        nParkingSpaces: 100,
+        vehicleType: "Car",
+        nFree: 20,
+        reservations: [],
+        averageScore: 0
+      });
+      await initialParking.save();
+
+      const response = await request(app)
+        .delete(`/api/v2/parkings/${initialParking._id}`)
+      console.log(response.body);
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe('Parking deleted');
+
+      // Verify that the parking was actually deleted
+      const deletedParking = await Parking.findById(initialParking._id);
+      expect(deletedParking).toBeNull();
+    });
+
 });

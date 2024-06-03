@@ -1,16 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Feedback = require('./models/feedback.js');
-const feedback = require('./models/feedback.js');
+const Parking = require('./models/parking.js');
+
+
+// Function to update the average score of a parking
+async function updateAverageScore(parkingId) {
+    const feedbacks = await Feedback.find({parking_id: parkingId}).sort({date: -1}).limit(30);
+    const scores = feedbacks.map( f => f.score);
+    const averageScore = scores.reduce((acc, score) => acc + score, 0) / scores.length || 0 ;
+
+    await Parking.findByIdAndUpdate(parkingId, {averageScore});
+}
+
 
 router.post('/', async (req, res) => {
     const { user_id, parking_id, score, comment } = req.body;
     
     if (!user_id || !parking_id || !score) {
-        return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    if (!user_id || !parking_id || score === undefined) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
     if (score < 1 || score > 5) {
@@ -23,6 +30,7 @@ router.post('/', async (req, res) => {
             date: new Date() 
         });
         await newFeedback.save();
+        await updateAverageScore(parking_id);
         res.status(201).json({ message: 'Feedback created successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
@@ -43,6 +51,13 @@ router.patch('/:id', async (req, res) => {
     }
 
     try{
+
+        const existingFeedback = await Feedback.findById(id);
+        if (!existingFeedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+        }
+
+
         const updatedFeedback = await Feedback.findByIdAndUpdate(
             id,
             { user_id, parking_id, score, comment },
@@ -52,6 +67,12 @@ router.patch('/:id', async (req, res) => {
         if (!updatedFeedback) {
             return res.status(404).json({ message: 'Feedback not found' });
         }
+
+        if (existingFeedback.parking_id !== parking_id) {
+            await updateAverageScore(existingFeedback.parking_id);
+        }
+
+        await updateAverageScore(parking_id);
 
         res.json({ message: 'Feedback updated successfully', feedback: updatedFeedback });
     } catch (error){
@@ -86,6 +107,7 @@ router.delete('/:id', async (req, res) => {
     try {
         const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
         if (deletedFeedback) {
+            await updateAverageScore(deletedFeedback.parking_id);
             res.json({ message: 'Feedback deleted successfully' });
         } else {
             res.status(404).json({ message: 'Feedback not found' });

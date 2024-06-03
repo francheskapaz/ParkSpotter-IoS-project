@@ -1,13 +1,12 @@
 
-require('dotenv').config()
+require('dotenv').config();
 
-var Parking  = require('../app/models/parking.js')
-var Feedback = require('../app/models/feedback.js')
-
+var Parking  = require('./app/models/parking.js')
+var Feedback = require('./app/models/feedback.js')
 const mongoose = require('mongoose');
 
-const DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-
+//const DB_URL = 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluster0.twbxma1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const DB_URL = process.env.DB_URL;
 console.log('DB_URL:', DB_URL);
 
 
@@ -47,7 +46,8 @@ Parking.deleteMany({}) // Clear collection
                     timeStart: new Date('2024-05-06T15:00:00Z'),
                     timeEnd: new Date('2024-05-06T15:30:00Z')
                 }
-            ]
+            ],
+            averageScore: 0
         });
         return parkingOne.save()
     }).then(() => {
@@ -65,7 +65,8 @@ Parking.deleteMany({}) // Clear collection
             nParkingSpaces: 26,
             vehicleType: "Bike",
             nFree: 12,
-            reservations: []
+            reservations: [],
+            averageScore: 0
         });
         return parkingTwo.save()
     }).then(() => {
@@ -79,6 +80,7 @@ Parking.deleteMany({}) // Clear collection
         process.exit(1);
     });
 
+// Add example feedbacks
 Feedback.deleteMany({}) // Clear collection
 .then(() => {
     console.log('Feedback collection cleared');
@@ -88,9 +90,9 @@ Feedback.deleteMany({}) // Clear collection
     if (!parking) {
         throw new Error('No parkings found in the database');
     }
-    const userId1 = '60c72b2f9b1d4c3b3c1a7b3f' //example of user ID
-    const userId2 = '60c72b2f9b1d4c3b3c1a7b4f'
-    const userId3 = '60c72b2f9b1d4c3b3c1a7b7b'
+    const userId1 = new mongoose.Types.ObjectId() // Generate ObjectId dynamically
+    const userId2 = new mongoose.Types.ObjectId()
+    const userId3 = new mongoose.Types.ObjectId()
     const parkingId1 = parking[0]._id
     const parkingId2 = parking[1]._id
 
