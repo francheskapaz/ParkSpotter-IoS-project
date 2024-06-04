@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Prenotazione API
+  description: API per la gestione delle prenotazioni
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /prenotazioni:
+    post:
+      summary: Crea una nuova prenotazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prenotazione'
+      responses:
+        '201':
+          description: Prenotazione creata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prenotazione'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /prenotazioni/{id}:
+    put:
+      summary: Aggiorna una prenotazione esistente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prenotazione'
+      responses:
+        '200':
+          description: Prenotazione aggiornata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prenotazione'
+        '404':
+          description: Prenotazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Cancella una prenotazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Prenotazione cancellata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Messaggio che indica il successo dell'operazione
+        '404':
+          description: Prenotazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Prenotazione:
+      type: object
+      properties:
+        idParcheggio:
+          type: integer
+          description: ID del parcheggio
+        nomeCliente:
+          type: string
+          description: Nome del cliente
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Messaggio di errore
+        error:
+          type: string
+          description: Dettagli dell'errore
