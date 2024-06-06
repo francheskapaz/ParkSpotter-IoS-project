@@ -19,8 +19,8 @@ app.use(cors())
 
 app.use(express.json());
 
-app.use('/api/v2/parkings', parcheggiRouter) // Mounting the parcheggiRouter to handle requests for the '/apiParcheggi/parcheggi' endpoint
+app.use('/api/v1/parkings', parcheggiRouter) // Mounting the parcheggiRouter to handle requests for the '/apiParcheggi/parcheggi' endpoint
 
-app.use('/api/v2/feedback', feedbackRouter) // Mounting the feedbackRouter to handle requests for the '/apiParcheggi/feedback' endpoint
+app.use('/api/v1/feedback', feedbackRouter) // Mounting the feedbackRouter to handle requests for the '/apiParcheggi/feedback' endpoint
 
 module.exports =  app;

@@ -7,7 +7,7 @@ DB_URL = process.env.DB_URL || 'mongodb+srv://mongoadmin:OTPk5CLSW4fJfeY3@cluste
 require('dotenv').config();
 
 
-describe('GET /api/v2/parkings', () => {
+describe('GET /api/v1/parkings', () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
     app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -16,14 +16,14 @@ describe('GET /api/v2/parkings', () => {
 
     afterAll(async () => {
         await mongoose.connection.close();
-        console.log('Database connection closed');
+        console.log('Database connection closed'); 
     });
     afterEach(async () => {
         await Parking.deleteMany({});
     });
 
   
-    test('GET /api/v2/parkings with existing parkings', async () => {
+    test('GET /api/v1/parkings with existing parkings', async () => {
       const initialParkings = [
         {
           name: "Parking Lot Test 1",
@@ -53,7 +53,7 @@ describe('GET /api/v2/parkings', () => {
       await Parking.insertMany(initialParkings);
 
       const response = await request(app)
-        .get('/api/v2/parkings');
+        .get('/api/v1/parkings');
 
       console.log(response.body);
       expect(response.statusCode).toBe(200);
@@ -63,7 +63,7 @@ describe('GET /api/v2/parkings', () => {
 });
 
 
-describe('GET /api/v2/parkings/:id', () => {
+describe('GET /api/v1/parkings/:id', () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
     app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -78,7 +78,7 @@ describe('GET /api/v2/parkings/:id', () => {
         await Parking.deleteMany({});
     });
 
-    test('GET /api/v2/parkings/:id', async () => {
+    test('GET /api/v1/parkings/:id', async () => {
       const newParking = new Parking({
         name: "Parking Lot Test",
         fee: 0,
@@ -95,7 +95,7 @@ describe('GET /api/v2/parkings/:id', () => {
     
       
       const response = await request(app)
-        .get(`/api/v2/parkings/${newParking._id}`);
+        .get(`/api/v1/parkings/${newParking._id}`);
       console.log(response.body);
 
       expect(response.statusCode).toBe(200);
@@ -105,7 +105,7 @@ describe('GET /api/v2/parkings/:id', () => {
 
 });
 
-describe('POST /api/v2/parkings', () => {
+describe('POST /api/v1/parkings', () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
     app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -119,9 +119,9 @@ describe('POST /api/v2/parkings', () => {
     afterEach(async () => {
         await Parking.deleteMany({});
     });
-    test('POST /api/v2/parkings with valid data', async () => {
+    test('POST /api/v1/parkings with valid data', async () => {
       const response = await request(app)
-        .post('/api/v2/parkings')
+        .post('/api/v1/parkings')
         .send({
             name: "Parking Lot Test",
             fee: 0,
@@ -142,7 +142,7 @@ describe('POST /api/v2/parkings', () => {
   });
 });
 
-describe('PATCH /api/v2/parkings/:id', () => {
+describe('PATCH /api/v1/parkings/:id', () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
     app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -157,7 +157,7 @@ describe('PATCH /api/v2/parkings/:id', () => {
         await Parking.deleteMany({});
     });
 
-    test('PATCH /api/v2/parkings/:id with valid data', async () => {
+    test('PATCH /api/v1/parkings/:id with valid data', async () => {
       const initialParking = new Parking({
         name: "Parking Lot Test",
         fee: 0,
@@ -178,7 +178,7 @@ describe('PATCH /api/v2/parkings/:id', () => {
       }
 
       const response = await request(app)
-        .patch(`/api/v2/parkings/${initialParking._id}`)
+        .patch(`/api/v1/parkings/${initialParking._id}`)
         .send(updateParkingData);
       console.log(response.body);
 
@@ -188,7 +188,7 @@ describe('PATCH /api/v2/parkings/:id', () => {
     });
 });
 
-describe('DELETE /api/v2/parkings/:id', () => {
+describe('DELETE /api/v1/parkings/:id', () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
     app.locals.db = await mongoose.connect(`${DB_URL}/testdb`)
@@ -202,7 +202,7 @@ describe('DELETE /api/v2/parkings/:id', () => {
     afterEach(async () => {
         await Parking.deleteMany({});
     });
-    test('DELETE /api/v2/parkings/:id with valid id', async () => {
+    test('DELETE /api/v1/parkings/:id with valid id', async () => {
       const initialParking = new Parking({
         name: "Parking Lot Test",
         fee: 0,
@@ -218,7 +218,7 @@ describe('DELETE /api/v2/parkings/:id', () => {
       await initialParking.save();
 
       const response = await request(app)
-        .delete(`/api/v2/parkings/${initialParking._id}`)
+        .delete(`/api/v1/parkings/${initialParking._id}`)
       console.log(response.body);
       expect(response.statusCode).toBe(200);
       expect(response.body.message).toBe('Parking deleted');
