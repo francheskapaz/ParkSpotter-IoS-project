@@ -22,7 +22,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:8080/api/v2/parkings');
+        const response = await axios.get('http://localhost:8080/api/v1/parkings');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data', error);
