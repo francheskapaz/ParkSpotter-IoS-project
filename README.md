@@ -7,7 +7,7 @@
 
 ## Informazione sul progetto
 
-Questo progetto mira a migliorare l’esperienza di parcheggio attraverso una applicazione web che fornisce  informazioni in tempo reale sulla disponibilità dei posti auto. L’applicazione suggerisce la migliore opzione di parcheggio agli utenti e propone nuovi parcheggi in affitto da altri utenti in modo da ridurre la mancanza di essi. Per ciò abbiamo ideato ParkSpotter.
+**ParkSpotter** mira a migliorare l’esperienza di parcheggio attraverso una applicazione web che fornisce informazioni in tempo reale sulla disponibilità dei posti auto. L’applicazione suggerisce la migliore opzione di parcheggio agli utenti e propone nuovi parcheggi in affitto da altri utenti in modo da ridurre la mancanza di essi.
 
 ## Materiale aggiuntivo
 
