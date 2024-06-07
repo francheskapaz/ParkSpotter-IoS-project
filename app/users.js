@@ -117,12 +117,42 @@ router.patch('/:userId', async (req, res) => {
         let user = await User.findById(req.params.userId);
 
         if (user) {
-            if (req.body.email) user.email = req.body.email;
-            if (req.body.password) user.password = req.body.password;
-            if (req.body.dateOfBirth) user.dateOfBirth = req.body.dateOfBirth;
+            if ('email' in req.body) {
+                if (isValidEmail(req.body.email)) {
+                    user.email = req.body.email;
+                } else {
+                    return res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
+                }
+            }
+            if ('password' in req.body) {
+                if (typeof req.body.password === 'string' && req.body.password.length > 0) {
+                    user.password = await bcrypt.hash(req.body.password, 10);
+                } else {
+                    return res.status(400).json({ error: 'Password must be a non-empty string' });
+                }
+            }
+            if ('dateOfBith' in req.body) {
+                if (typeof req.body.dateOfBirth === 'string') {
+                    user.dateOfBirth = req.body.dateOfBirth;
+                } else {
+                    return res.status(400).json({ error: 'DateOfBirth must be a string' });
+                }
+            }
             if (req.loggedUser.type === 'Admin') {
-                if (req.body.credibility) user.credibility = req.body.credibility;
-                if (req.body.credit) user.credit = req.body.credit;
+                if ('credibility' in req.body) {
+                    if (typeof req.body.credibility === 'number' && req.body.credibility >= 0 && req.body.credibility <= 100) {
+                        user.credibility = req.body.credibility;
+                    } else {
+                        return res.status(400).json({ error: 'Credibility must be a number between 0 and 100' });
+                    }
+                }
+                if ('credit' in req.body) {
+                    if (typeof req.body.credit === 'number' && req.body.credit >= 0) {
+                        user.credit = req.body.credit;
+                    } else {
+                        return res.status(400).json({ error: 'Credit must be a number greater or equal to 0' });
+                    }
+                }
             }
             user = await user.save();
 

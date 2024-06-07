@@ -229,3 +229,87 @@ describe('DELETE /api/v1/users/:userId', () => {
         expect(await User.findById(payload.id).exec()).toBe(null);
     });
 });
+
+describe('PATCH /api/v1/users', () => {
+    let user;
+    let token;
+
+    beforeAll(async () => {
+        jest.setTimeout(8000);
+        jest.unmock('mongoose');
+        app.locals.db = await mongoose.connect(process.env.DB_URL + '/testdb');
+
+        // Create the user
+        user = new User({
+            type: 'Consumer',
+            email: 'test-patch@mail.com',
+            username: 'test-patch',
+            password: 'test'
+        });
+        await user.save();
+
+        // Create valid token
+        const payload = {
+            id: user.id,
+            email: user.email,
+            user_type: user.type
+        }
+        const options = { expiresIn: 86400 }
+        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+    });
+
+    test('PATCH /api/v1/users/:userId with valid email and password', async () => {
+        const response = await request(app)
+            .patch('/api/v1/users/' + user.id)
+            .set('X-access-token', token)
+            .send({
+                email: 'test-new@mail.com',
+                password: 'test'
+            })
+        expect(response.statusCode).toBe(200);
+    });
+
+    test('PATCH /api/v1/users/:userId with invalid email', async () => {
+        const response = await request(app)
+            .patch('/api/v1/users/' + user.id)
+            .set('X-access-token', token)
+            .send({
+                email: 'test-new2"\'@mail.com',
+                password: 'test'
+            })
+        expect(response.statusCode).toBe(400);
+    });
+
+    test('PATCH /api/v1/users with empty password', async () => {
+        const response = await request(app)
+            .patch('/api/v1/users/' + user.id)
+            .set('X-access-token', token)
+            .send({
+                password: ''
+            })
+        expect(response.statusCode).toBe(400);
+    });
+
+    test('PATCH /api/v1/users/:userId with a valid token of a different user', async () => {
+        const payload = {
+            id: 'df49fc5c0bcc5c979d53c65fd08aad2e',
+            email: user.email,
+            user_type: user.type
+        }
+        const options = { expiresIn: 86400 }
+        const token2 = jwt.sign(payload, process.env.SUPER_SECRET, options);
+
+        const response = await request(app)
+            .patch('/api/v1/users/' + user.id)
+            .set('X-access-token', token2)
+            .send({
+                email: 'test-new@mail.com',
+                password: 'test'
+            })
+        expect(response.statusCode).toBe(403);
+    });
+});
