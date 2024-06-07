@@ -4,7 +4,7 @@
 ### shows all parking lots
 GET http://localhost:8080/api/v1/parkings
 
-### shows detailed information of a specific parking lot e.g. parking B via his id
+### shows detailed information of a specific parking lot via his id
 GET http://localhost:8080/api/v1/parkings/665d73c234bf77f32ff97c09
 
 ### creates a parking lot
@@ -69,11 +69,12 @@ Content-Type: application/json
     "date": "2021-06-02T00:00:00.000Z"
 }
 
-
 ### Delete a feedback by its id
 DELETE http://localhost:8080/api/v1/feedback/665d72f447cdab523fefe2ac
 Content-Type: application/json
 
+### Get all feedbacks of a specific parking lot
+GET http://localhost:8080/api/v1/parkings/665d8a20a7767a2a220cf99e/feedback
 
 
    

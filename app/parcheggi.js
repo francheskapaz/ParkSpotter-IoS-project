@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const  Parking  = require('./models/parking.js');
+const Parking  = require('./models/parking.js')
+const Feedback = require('./models/feedback.js')
 
 // Create a new parking
 router.post('/', async (req, res) => {
@@ -74,6 +75,21 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
  });
+
+ // Get all feedbacks for a specific parking
+
+router.get('/:id/feedback', async (req, res) => {
+    try {
+        const feedbacks = await Feedback.find({ parking_id: req.params.id });
+        if (feedbacks.length > 0) {
+            return res.json(feedbacks);
+        } else {
+            res.status(404).json({ message: 'Feedbacks not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // Delete a parking
 router.delete('/:id', async (req, res) => {
