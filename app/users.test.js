@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 
-describe('POST /api/v1/users', () => {
+describe('POST /api/v2/users', () => {
 
     beforeAll(async () => {
         jest.setTimeout(8000);
@@ -23,9 +23,9 @@ describe('POST /api/v1/users', () => {
         await User.deleteMany({});
     })
 
-    test('POST /api/v1/users with valid data', async () => {
+    test('POST /api/v2/users with valid data', async () => {
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 type: 'Consumer',
                 email: 'test1@mail.com',
@@ -33,12 +33,12 @@ describe('POST /api/v1/users', () => {
                 password: 'test1'
             })
         expect(response.statusCode).toBe(201);
-        expect(response.headers.location).toMatch(/\/api\/v1\/users\/[0-9a-f]+/i);
+        expect(response.headers.location).toMatch(/\/api\/v2\/users\/[0-9a-f]+/i);
     });
 
-    test('POST /api/v1/users with invalid email', async () => {
+    test('POST /api/v2/users with invalid email', async () => {
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 type: 'Consumer',
                 email: 'test2"\'@mail.com',
@@ -48,7 +48,7 @@ describe('POST /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('POST /api/v1/users with already registered username', async () => {
+    test('POST /api/v2/users with already registered username', async () => {
         // Create the user
         const user = new User({
             type: 'Consumer',
@@ -59,7 +59,7 @@ describe('POST /api/v1/users', () => {
         await user.save();
 
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 type: 'Consumer',
                 email: 'test3@mail.com',
@@ -69,9 +69,9 @@ describe('POST /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('POST /api/v1/users with empty username', async () => {
+    test('POST /api/v2/users with empty username', async () => {
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 type: 'Consumer',
                 email: 'test4@mail.com',
@@ -80,9 +80,9 @@ describe('POST /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('POST /api/v1/users with empty password', async () => {
+    test('POST /api/v2/users with empty password', async () => {
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 type: 'Consumer',
                 email: 'test5@mail.com',
@@ -91,9 +91,9 @@ describe('POST /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('POST /api/v1/users with empty type', async () => {
+    test('POST /api/v2/users with empty type', async () => {
         const response = await request(app)
-            .post('/api/v1/users')
+            .post('/api/v2/users')
             .send({
                 email: 'test6@mail.com',
                 username: 'test6',
@@ -103,7 +103,7 @@ describe('POST /api/v1/users', () => {
     });
 });
 
-describe('GET /api/v1/users/:userId', () => {
+describe('GET /api/v2/users/:userId', () => {
     let user;
     let token;
 
@@ -137,24 +137,24 @@ describe('GET /api/v1/users/:userId', () => {
         await mongoose.connection.close();
     });
 
-    test('GET /api/v1/users/:userId with valid token', async () => {
+    test('GET /api/v2/users/:userId with valid token', async () => {
         const response = await request(app)
-            .get('/api/v1/users/' + user.id)
+            .get('/api/v2/users/' + user.id)
             .set('X-access-token', token)
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('self');
     });
 
-    test('GET /api/v1/users/:userId without valid token', async () => {
+    test('GET /api/v2/users/:userId without valid token', async () => {
         const response = await request(app)
-            .get('/api/v1/users/' + user.id)
+            .get('/api/v2/users/' + user.id)
 
         expect(response.statusCode).toBe(401);
     });
 });
 
-describe('DELETE /api/v1/users/:userId', () => {
+describe('DELETE /api/v2/users/:userId', () => {
     let user;
 
     beforeAll(async () => {
@@ -178,14 +178,14 @@ describe('DELETE /api/v1/users/:userId', () => {
         await mongoose.connection.close();
     });
 
-    test('DELETE /api/v1/users/:userId without valid token', async () => {
+    test('DELETE /api/v2/users/:userId without valid token', async () => {
         const response = await request(app)
-            .delete('/api/v1/users/' + user.id)
+            .delete('/api/v2/users/' + user.id)
 
         expect(response.statusCode).toBe(401);
     });
 
-    test('DELETE /api/v1/users/:userId with the token of a different user', async () => {
+    test('DELETE /api/v2/users/:userId with the token of a different user', async () => {
         // Create valid token
         const payload = {
             id: '000000000000000000',
@@ -196,13 +196,13 @@ describe('DELETE /api/v1/users/:userId', () => {
         const token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
         const response = await request(app)
-            .get('/api/v1/users/' + user.id) // id of the 'test' user
+            .get('/api/v2/users/' + user.id) // id of the 'test' user
             .set('X-access-token', token)
 
         expect(response.statusCode).toBe(403);
     });
 
-    test('DELETE /api/v1/users/:userId with valid token', async () => {
+    test('DELETE /api/v2/users/:userId with valid token', async () => {
         // Create a test user
         const usertwo = new User({
             type: 'Consumer',
@@ -222,7 +222,7 @@ describe('DELETE /api/v1/users/:userId', () => {
         const token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
         const response = await request(app)
-            .delete('/api/v1/users/' + usertwo.id)
+            .delete('/api/v2/users/' + usertwo.id)
             .set('X-access-token', token)
 
         expect(response.statusCode).toBe(200);
@@ -230,7 +230,7 @@ describe('DELETE /api/v1/users/:userId', () => {
     });
 });
 
-describe('PATCH /api/v1/users', () => {
+describe('PATCH /api/v2/users', () => {
     let user;
     let token;
 
@@ -262,9 +262,9 @@ describe('PATCH /api/v1/users', () => {
         await mongoose.connection.close();
     });
 
-    test('PATCH /api/v1/users/:userId with valid email and password', async () => {
+    test('PATCH /api/v2/users/:userId with valid email and password', async () => {
         const response = await request(app)
-            .patch('/api/v1/users/' + user.id)
+            .patch('/api/v2/users/' + user.id)
             .set('X-access-token', token)
             .send({
                 email: 'test-new@mail.com',
@@ -273,9 +273,9 @@ describe('PATCH /api/v1/users', () => {
         expect(response.statusCode).toBe(200);
     });
 
-    test('PATCH /api/v1/users/:userId with invalid email', async () => {
+    test('PATCH /api/v2/users/:userId with invalid email', async () => {
         const response = await request(app)
-            .patch('/api/v1/users/' + user.id)
+            .patch('/api/v2/users/' + user.id)
             .set('X-access-token', token)
             .send({
                 email: 'test-new2"\'@mail.com',
@@ -284,9 +284,9 @@ describe('PATCH /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('PATCH /api/v1/users with empty password', async () => {
+    test('PATCH /api/v2/users with empty password', async () => {
         const response = await request(app)
-            .patch('/api/v1/users/' + user.id)
+            .patch('/api/v2/users/' + user.id)
             .set('X-access-token', token)
             .send({
                 password: ''
@@ -294,7 +294,7 @@ describe('PATCH /api/v1/users', () => {
         expect(response.statusCode).toBe(400);
     });
 
-    test('PATCH /api/v1/users/:userId with a valid token of a different user', async () => {
+    test('PATCH /api/v2/users/:userId with a valid token of a different user', async () => {
         const payload = {
             id: 'df49fc5c0bcc5c979d53c65fd08aad2e',
             email: user.email,
@@ -304,7 +304,7 @@ describe('PATCH /api/v1/users', () => {
         const token2 = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
         const response = await request(app)
-            .patch('/api/v1/users/' + user.id)
+            .patch('/api/v2/users/' + user.id)
             .set('X-access-token', token2)
             .send({
                 email: 'test-new@mail.com',

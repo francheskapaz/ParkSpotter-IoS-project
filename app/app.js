@@ -7,6 +7,7 @@ const app = express();
 
 const authentication = require('./authentication.js');
 const users = require('./users.js');
+const users_v2 = require('./users-v2.js');
 const rents = require('./rents.js');
 const tokenChecker = require('./tokenChecker.js');
 const parcheggiRouter = require('./parcheggi.js');
@@ -45,6 +46,7 @@ app.use('/api/v1/authentication', authentication);
 
 // Endpoint that require authentication
 app.use('/api/v1/users/:userId', tokenChecker);
+app.use('/api/v2/users/:userId', tokenChecker);
 app.put('/api/v1/parkings', tokenChecker);
 app.use('/api/v2/rents', tokenChecker);
 
@@ -52,6 +54,7 @@ app.use('/api/v2/rents', tokenChecker);
  * Resource routing
  */
 app.use('/api/v1/users', users);
+app.use('/api/v2/users', users_v2);
 app.use('/api/v1/parkings', parcheggiRouter);
 app.use('/api/v2/rents', rents);
 

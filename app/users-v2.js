@@ -39,6 +39,10 @@ router.post('', async function(req, res) {
         email: req.body.email
     });
 
+    // Set credibility for Consumer and credit for Proprietario
+    if (req.body.type === 'Consumer') user.credibility = 50;
+    else if (req.body.type === 'Proprietario') user.credit = 0;
+
     // Create password hash
     const hash = await bcrypt.hash(req.body.password, 10)
     if (hash) {
@@ -49,7 +53,7 @@ router.post('', async function(req, res) {
     }
 
     // Send the link of the new resource
-    res.location('/api/v1/users/' + user.id).status(201).send();
+    res.location(req.baseUrl + '/' + user.id).status(201).send();
 });
 
 /*
@@ -73,7 +77,7 @@ router.get('/:userId', async (req, res) => {
         return res.status(404).json({ success: false, message: 'User not found' })
     } else if (user.type === 'Consumer') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user.id,
+            self: req.baseUrl + '/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
@@ -82,7 +86,7 @@ router.get('/:userId', async (req, res) => {
         });
     } else if (user.type === 'Proprietario') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user.id,
+            self: req.baseUrl + '/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
@@ -91,12 +95,73 @@ router.get('/:userId', async (req, res) => {
         });
     } else if (user.type === 'Admin') {
         return res.status(200).json({
-            self: '/api/v1/users/' + user.id,
+            self: req.baseUrl + '/' + user.id,
             type: user.type,
             username: user.username,
             email: user.email,
             dateOfBirth: user.dateOfBirth
         });
+    }
+});
+
+/*
+ * Update user
+ */
+router.patch('/:userId', async (req, res) => {
+    // Check authorization
+    if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
+        return res.status(403).json({ success: false, message: 'Permission denied' });
+    }
+
+    try {
+        let user = await User.findById(req.params.userId);
+
+        if (user) {
+            if ('email' in req.body) {
+                if (isValidEmail(req.body.email)) {
+                    user.email = req.body.email;
+                } else {
+                    return res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
+                }
+            }
+            if ('password' in req.body) {
+                if (typeof req.body.password === 'string' && req.body.password.length > 0) {
+                    user.password = await bcrypt.hash(req.body.password, 10);
+                } else {
+                    return res.status(400).json({ error: 'Password must be a non-empty string' });
+                }
+            }
+            if ('dateOfBith' in req.body) {
+                if (typeof req.body.dateOfBirth === 'string') {
+                    user.dateOfBirth = req.body.dateOfBirth;
+                } else {
+                    return res.status(400).json({ error: 'DateOfBirth must be a string' });
+                }
+            }
+            if (req.loggedUser.type === 'Admin') {
+                if ('credibility' in req.body) {
+                    if (typeof req.body.credibility === 'number' && req.body.credibility >= 0 && req.body.credibility <= 100) {
+                        user.credibility = req.body.credibility;
+                    } else {
+                        return res.status(400).json({ error: 'Credibility must be a number between 0 and 100' });
+                    }
+                }
+                if ('credit' in req.body) {
+                    if (typeof req.body.credit === 'number' && req.body.credit >= 0) {
+                        user.credit = req.body.credit;
+                    } else {
+                        return res.status(400).json({ error: 'Credit must be a number greater or equal to 0' });
+                    }
+                }
+            }
+            user = await user.save();
+
+            res.status(200).json({ success: true, message: 'User updated.' });
+        } else {
+            res.status(404).json({ success: false, message: `No user found with id ${req.params.userId}` });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
