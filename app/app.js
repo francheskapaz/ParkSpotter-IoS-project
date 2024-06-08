@@ -11,7 +11,7 @@ const users_v2 = require('./users-v2.js');
 const rents = require('./rents.js');
 const tokenChecker = require('./tokenChecker.js');
 const parcheggiRouter = require('./parcheggi.js');
-
+const feedbackRouter = require('./feedback.js');
 /**
  * Express.js parsing middleware
  */
@@ -57,6 +57,12 @@ app.use('/api/v1/users', users);
 app.use('/api/v2/users', users_v2);
 app.use('/api/v1/parkings', parcheggiRouter);
 app.use('/api/v2/rents', rents);
-
+app.use('/api/v1/feedback', feedbackRouter) 
 
 module.exports = app;
+
+
+
+
+
+

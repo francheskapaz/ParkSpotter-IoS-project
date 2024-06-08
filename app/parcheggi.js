@@ -1,93 +1,108 @@
-const { Router } = require('express');
-const { validateParcheggio, validatePartialParcheggio } = require('../scheme/parcheggioSchema.js'); // Importar funciones de validación desde el archivo de esquema
-const Parking = require('./models/parking.js');
+const express = require('express');
+const router = express.Router();
+const Parking  = require('./models/parking.js')
+const Feedback = require('./models/feedback.js')
 
-const parcheggiRouter = Router()
+// Create a new parking
+router.post('/', async (req, res) => {
+    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore } = req.body;
 
-parcheggiRouter.get('/', async (req, res) => {
+    // Validation of required fields
+    const requiredFields = ['name', 'fee', 'maxStop', 'open', 'coordinates', 'nParkingSpaces', 'vehicleType', 'nFree', 'averageScore'];
+    const missingFields = requiredFields.filter(field => req.body[field] === undefined);
+    if (missingFields.length > 0) {
+        return res.status(400).json({ error: `Missing required fields: ${missingFields.join(', ')}` });
+    }
+
+    // Validation of data types
+    if (typeof coordinates !== 'object' || typeof coordinates.nord !== 'number' || typeof coordinates.est !== 'number') {
+        return res.status(400).json({ error: 'Invalid coordinates format' });
+    }
+
+    try {
+        const newParking = new Parking({  
+            name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, 
+            reservations: reservations || [], //Default value if not provided
+            averageScore: averageScore || 0 //Default value if not provided
+        });
+        await newParking.save();
+        res.status(201).json({ message: 'Parking created successfully', parking: newParking});
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+});
+
+// Update an existing parking
+router.patch('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore } = req.body;
+
+    try {
+        const updateParking = await Parking.findByIdAndUpdate(
+            id,
+            { name, fee, maxStop, open, coordinates, nParkingSpaces, vehicleType, nFree, reservations, averageScore },
+            { new: true, runValidators: true }
+        );
+
+        if(!updateParking) {
+            return res.status(404).json({ message: 'Parking not found' });
+        }
+        res.json({ message: 'Parking updated successfully', parking: updateParking });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+});
+
+// Get all parkings
+router.get('/', async (req, res) => {
     try {
         res.json(await Parking.find());
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
-})
+});
 
-parcheggiRouter.get('/:id', async (req, res) => {
+// Get a specific parking
+router.get('/:id', async (req, res) => {    
     try {
         const foundParcheggio = await Parking.findById(req.params.id);
         if (foundParcheggio) {
             return res.json(foundParcheggio);
         } else {
-            res.status(404).json({ message: 'Parcheggio not found' });
+            res.status(404).json({ message: 'Parking not found' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
-})
+ });
 
+ // Get all feedbacks for a specific parking
 
-parcheggiRouter.post('/', async (req, res) => {
+router.get('/:id/feedback', async (req, res) => {
     try {
-        const result = validateParcheggio(req.body);
-        if (result.error) {
-            return res.status(400).json({ error: JSON.parse(result.error.message) });
-        }
-        const newParcheggio = await Parking.create(req.body);
-        res.status(201).json(newParcheggio);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-})
-
-parcheggiRouter.put('', async (req, res) => {
-    // Check authorization
-    if (req.loggedUser.user_type !== 'Admin' && req.loggedUser.user_type !== 'Proprietario') {
-        return res.status(403).json({ success: false, message: 'Permission denied' });
-    }
-
-    try {
-        let parking = req.body;
-
-        const result = validateParcheggio(parking);
-        if (!result.success) {
-            return res.status(400).json({ error: JSON.parse(result.error.message) });
-        }
-
-        // Necessaria l'approvazione dell'Admin
-        if (req.loggedUser.user_type === 'Proprietario') parking.open = false;
-
-        parking = new Parking(req.body);
-        parking = await parking.save();
-        return res.json({ success: true, message: 'Parking saved successfully', parkingId: parking.id });
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-})
-
-parcheggiRouter.patch('/:id', async (req, res) => {
-    try {
-        const result = validatePartialParcheggio(req.body);
-        if (!result.success) {
-            return res.status(400).json({ error: JSON.parse(result.error.message) });
-        }
-        const updateParcheggio = await Parking.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return res.json(updateParcheggio);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-})
-
-parcheggiRouter.delete('/:id', async (req, res) => {
-    try {
-        const result = await Parking.findByIdAndDelete(req.params.id);
-        if (result) {
-            return res.json({ message: 'Parcheggio deleted' });
+        const feedbacks = await Feedback.find({ parking_id: req.params.id });
+        if (feedbacks.length > 0) {
+            return res.json(feedbacks);
         } else {
-            return res.status(404).json({ message: 'Parcheggio not found' });
+            res.status(404).json({ message: 'Feedbacks not found' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
-})
+});
 
-module.exports = parcheggiRouter;
+// Delete a parking
+router.delete('/:id', async (req, res) => {
+    try{
+        const deleteParking = await Parking.findByIdAndDelete(req.params.id);
+        if (deleteParking) {
+            return res.json({ message: 'Parking deleted' });
+        } else {        
+            res.status(404).json({ message: 'Parking not found' });
+        }
+    } catch (error) {        
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+module.exports =  router;

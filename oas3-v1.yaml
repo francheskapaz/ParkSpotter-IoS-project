@@ -171,7 +171,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Parking'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+                  parking:
+                    $ref: '#/components/schemas/Parking'
         '400':
           description: Bad request, invalid input
           content:
@@ -186,7 +192,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /parkings/{id}:
     get:
-      summary: Get a parking by ID
+      summary: Get a specific parking
       parameters:
         - name: id
           in: path
@@ -213,7 +219,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     patch:
-      summary: Update a parking by ID
+      summary: Update an existing parking
       parameters:
         - name: id
           in: path
@@ -225,14 +231,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PartialParking'
+              $ref: '#/components/schemas/Parking'
       responses:
         '200':
           description: Parking updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Parking'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+                  parking:
+                    $ref: '#/components/schemas/Parking'
         '400':
           description: Bad request, invalid input
           content:
@@ -252,7 +264,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
-      summary: Delete a parking by ID
+      summary: Delete a parking
       parameters:
         - name: id
           in: path
@@ -282,6 +294,143 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /feedbacks:
+    get:
+      summary: Get all feedbacks
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      responses:
+        '201':
+          description: Feedback created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /feedbacks/{id}:
+    get:
+      summary: Get a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      responses:
+        '200':
+          description: Feedback updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Feedback deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '404':
+          description: Feedback not found
 components:
   schemas:
     Parking:
@@ -289,103 +438,55 @@ components:
       properties:
         id:
           type: string
-          description: ID of the parking
+          description: Unique identifier for the parking spot
         name:
           type: string
-          description: Name of the parking
-        fee:
-          type: number
-          description: Hourly fee
-        maxStop:
-          type: number
-          description: Maximum stop time in minutes
-        open:
-          type: boolean
-          description: Indicate if the parking is available
-        coordinates:
+          description: Name of the parking spot
+        location:
           type: object
           properties:
-            nord:
+            latitude:
               type: number
-              description: North coordinate
-            est:
+              format: double
+              description: Latitude of the parking spot
+            longitude:
               type: number
-              description: East coordinate
-          description: Geographic coordinates of the parking
-        nParkingSpaces:
-          type: integer
-          description: Total number of parking spaces
-        vehicleType:
+              format: double
+              description: Longitude of the parking spot
+          required:
+            - latitude
+            - longitude
+        available:
+          type: boolean
+          description: Availability status of the parking spot
+        ownerId:
           type: string
-          description: Type of supported vehicle
-        nFree:
-          type: integer
-          description: Number of free parking spaces
-        reservations:
-          type: array
-          items:
-            type: object
-            properties:
-              timeStart:
-                type: string
-                format: date-time
-                description: Reservation start time
-              timeEnd:
-                type: string
-                format: date-time
-                description: Reservation end time
-          description: Parking reservations
-    PartialParking:
+          description: The ID of the owner of the parking spot
+        pricePerHour:
+          type: number
+          format: double
+          description: Hourly price for the parking spot
+    Feedback:
       type: object
       properties:
-        id:
+        user_id:
           type: string
-          description: ID of the parking
-        name:
+          description: The ID of the user who provided the feedback
+        parking_id:
           type: string
-          description: Name of the parking
-        fee:
+          description: The ID of the parking for which the feedback is provided
+        score:
           type: number
-          description: Hourly fee
-        maxStop:
-          type: number
-          description: Maximum stop time in minutes
-        open:
-          type: boolean
-          description: Indicate if the parking is available
-        coordinates:
-          type: object
-          properties:
-            nord:
-              type: number
-              description: North coordinate
-            est:
-              type: number
-              description: East coordinate
-          description: Geographic coordinates of the parking
-        nParkingSpaces:
-          type: integer
-          description: Total number of parking spaces
-        vehicleType:
+          minimum: 1
+          maximum: 5
+          description: The score given in the feedback, ranging from 1 to 5
+        comment:
           type: string
-          description: Type of supported vehicle
-        nFree:
-          type: integer
-          description: Number of free parking spaces
-        reservations:
-          type: array
-          items:
-            type: object
-            properties:
-              timeStart:
-                type: string
-                format: date-time
-                description: Reservation start time
-              timeEnd:
-                type: string
-                format: date-time
-                description: Reservation end time
-          description: Parking reservations
+          description: An optional comment provided along with the feedback
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the feedback was provided
     ErrorResponse:
       type: object
       properties:
