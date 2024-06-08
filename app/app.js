@@ -1,21 +1,62 @@
 const path = require('path');
 const cors = require('cors');
 const express = require('express');
-const { json } = require('express');
+
 
 const app = express();
 
+
+
+
+
+
 const parcheggiRouter = require('./parcheggi.js');
 const feedbackRouter = require('./feedback.js');
-
-
-app.use(json()) // Adding the json middleware to parse incoming request bodies as JSON
- 
-app.use(cors())
-
+/**
+ * Express.js parsing middleware
+ */
 app.use(express.json());
 
-app.use('/api/v1/parkings', parcheggiRouter) // Mounting the parcheggiRouter to handle requests for the '/apiParcheggi/parcheggi' endpoint
-app.use('/api/v1/feedback', feedbackRouter) // Mounting the feedbackRouter to handle requests for the '/apiParcheggi/feedback' endpoint
+
+/**
+ * Serve static files for the front-end
+ */
+app.use(express.static(path.join(__dirname, '..', 'static')));
+
+
+/**
+ * CORS requests
+ */
+app.use(cors())
+
+
+/**
+ * Log requests to console
+ */
+app.use((req, res, next) => {
+    console.log(req.method + ' ' + req.url)
+    next()
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use('/api/v1/parkings', parcheggiRouter) 
+
+app.use('/api/v1/feedback', feedbackRouter) 
 
 module.exports =  app;
