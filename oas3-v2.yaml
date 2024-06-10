@@ -8,6 +8,19 @@ servers:
     description: Localhost
 paths:
   /users:
+    get:
+      summary: Return users list
+      parameters:
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation. Users list in the response body
+        '403':
+          description: Permission denied
     post:
       summary: Register a new user
       requestBody:
