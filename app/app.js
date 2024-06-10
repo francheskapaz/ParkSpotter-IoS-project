@@ -47,6 +47,7 @@ app.use('/api/v1/authentication', authentication);
 // Endpoint that require authentication
 app.use('/api/v1/users/:userId', tokenChecker);
 app.use('/api/v2/users/:userId', tokenChecker);
+app.get('/api/v2/users', tokenChecker);
 app.put('/api/v1/parkings', tokenChecker);
 app.use('/api/v2/rents', tokenChecker);
 

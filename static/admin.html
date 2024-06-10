@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/script.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body onload="showUser()">
+        <a href="/" style="text-decoration: none;color: #333;"> <h1>Parkspotter</h1> </a>
+        <nav>
+            <div class="links">
+                <div id="admin" style="display:none">
+                    <a href="/admin.html">Admin</a>
+                </div>
+                <div id="auth" style="display:none">
+                    <a href="/user.html">Profilo</a>
+                    <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
+                </div>
+                <div id="notauth">
+                    <a href="/signup.html">Sign-up</a>
+                    <a href="/login.html">Log-in</a>
+                </div>
+            </div>
+        </nav>
+
+        <h2>Utenti</h2>
+
+        <div id="users">
+        </div>
+
+        <h2>Parcheggi</h2>
+        <div id="parkings">
+        </div>
+        <script src="/admin.js">
+        </script>
+    </body>
+</html>
+

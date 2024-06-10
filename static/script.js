@@ -26,6 +26,9 @@ function showUser() {
                 document.getElementById('auth').style.display = 'block';
                 document.getElementById('notauth').style.display = 'none';
             }
+            if (userType === 'Admin') {
+                document.getElementById('admin').style.display = 'block';
+            }
         })
     showProprietario();
 }
