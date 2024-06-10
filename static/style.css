@@ -1,71 +1,16 @@
-/* Stile generale */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
+form {
+    margin-bottom: 1em;
 }
 
-/* Stile per il form di prenotazione */
-#prenotazione-form {
-    margin-bottom: 20px;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#prenotazione-form label {
+label, input {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 0.5em;
 }
 
-#prenotazione-form input[type="text"],
-#prenotazione-form select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#prenotazione-form button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-}
-
-#prenotazione-form button:hover {
-    background-color: #0056b3;
-}
-
-/* Stile per la tabella dei parcheggi */
-#parcheggi-table {
-    width: 100%;
-    border-collapse: collapse;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#parcheggi-table th, #parcheggi-table td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-#parcheggi-table th {
-    background-color: #f2f2f2;
-    text-align: left;
+#message {
+    color: red;
 }
