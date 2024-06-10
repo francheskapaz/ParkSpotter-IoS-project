@@ -57,6 +57,18 @@ router.post('', async function(req, res) {
 });
 
 /*
+ * Return users list
+ */
+router.get('', async (req, res) => {
+    if (req.loggedUser.user_type !== 'Admin') {
+        return res.status(403).json({ success: false, message: 'Permission denied' });
+    }
+
+    const users = await User.find({}, '-password -__v');
+    return res.json(users);
+});
+
+/*
  * Return user info
  */
 router.get('/:userId', async (req, res) => {
@@ -170,7 +182,7 @@ router.patch('/:userId', async (req, res) => {
  */
 router.delete('/:userId', async (req, res) => {
     // Only Admin can delete other users
-    if (req.loggedUser.type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
+    if (req.loggedUser.user_type !== 'Admin' && req.params.userId !== req.loggedUser.id) {
         return res.status(403).json({ success: false, message: 'Permission denied' });
     }
 
