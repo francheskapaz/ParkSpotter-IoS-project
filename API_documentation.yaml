@@ -1,14 +1,20 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Prenotazione API
-  description: API per la gestione delle prenotazioni
+  title: Parcheggio API
+  description: API per la gestione delle prenotazioni di parcheggio
 servers:
   - url: http://localhost:8080/api
 paths:
-  /prenotazioni:
+  /{id}/reservations:
     post:
       summary: Crea una nuova prenotazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -22,21 +28,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Prenotazione'
+        '400':
+          description: Errore nella richiesta
+        '404':
+          description: Parcheggio non trovato
         '500':
           description: Errore interno del server
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /prenotazioni/{id}:
     put:
-      summary: Aggiorna una prenotazione esistente
+      summary: Modifica una prenotazione esistente
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+        - name: resId
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -45,23 +55,17 @@ paths:
               $ref: '#/components/schemas/Prenotazione'
       responses:
         '200':
-          description: Prenotazione aggiornata con successo
+          description: Prenotazione modificata con successo
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Prenotazione'
+        '400':
+          description: Errore nella richiesta
         '404':
-          description: Prenotazione non trovata
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          description: Prenotazione o parcheggio non trovato
         '500':
           description: Errore interno del server
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
     delete:
       summary: Cancella una prenotazione
       parameters:
@@ -69,47 +73,57 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+        - name: resId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Prenotazione cancellata con successo
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: Messaggio che indica il successo dell'operazione
+                $ref: '#/components/schemas/Prenotazione'
         '404':
-          description: Prenotazione non trovata
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          description: Prenotazione o parcheggio non trovato
         '500':
           description: Errore interno del server
+    get:
+      summary: Ottieni tutte le prenotazioni di un parcheggio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco delle prenotazioni
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prenotazione'
+        '404':
+          description: Parcheggio non trovato
+        '500':
+          description: Errore interno del server
 components:
   schemas:
     Prenotazione:
       type: object
       properties:
-        idParcheggio:
-          type: integer
-          description: ID del parcheggio
-        nomeCliente:
+        timeStart:
           type: string
-          description: Nome del cliente
-    ErrorResponse:
-      type: object
-      properties:
-        message:
+          format: date-time
+          description: Ora di inizio della prenotazione
+        timeEnd:
           type: string
-          description: Messaggio di errore
-        error:
-          type: string
-          description: Dettagli dell'errore
+          format: date-time
+          description: Ora di fine della prenotazione
+        fee:
+          type: number
+          description: Tariffa della prenotazione
