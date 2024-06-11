@@ -2,22 +2,22 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Parcheggio API
-  description: API per la gestione delle prenotazioni di parcheggio e il calcolo delle tariffe totali
+  description: API per la gestione delle tariffe di parcheggio
 servers:
   - url: http://localhost:8080/api
 paths:
-  /{id}/totalFee:
+  /{name}/totalFee:
     get:
       summary: Ottieni la somma totale delle tariffe di un parcheggio
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Somma totale delle tariffe ottenuta con successo
+          description: Somma totale delle tariffe
           content:
             application/json:
               schema:
@@ -25,16 +25,15 @@ paths:
                 properties:
                   totalFee:
                     type: number
-                    description: Somma totale delle tariffe
         '404':
           description: Parcheggio non trovato
         '500':
           description: Errore interno del server
-  /{id}/updateTotalFee:
+  /{name}/updateTotalFee:
     put:
       summary: Aggiorna la somma totale delle tariffe di un parcheggio
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -69,6 +68,13 @@ components:
     Parcheggio:
       type: object
       properties:
+        name:
+          type: string
+          description: Nome del parcheggio
+        reservations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prenotazione'
         totalFee:
           type: number
           description: Somma totale delle tariffe
