@@ -1,4 +1,16 @@
-#map {
-    height: 400px;
-    width: 100%;
+body {
+    font-family: Arial, sans-serif;
+}
+
+form {
+    margin-bottom: 1em;
+}
+
+label, input {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+#message {
+    color: red;
 }

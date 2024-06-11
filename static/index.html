@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Prenotazione Parcheggio</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <h1>hello</h1>
+    <h1>Prenotazione Parcheggio</h1>
+    <form id="reservation-form">
+        <label for="parking-id">ID Parcheggio:</label>
+        <input type="text" id="parking-id" name="parking-id">
+        <label for="time-start">Ora di inizio:</label>
+        <input type="datetime-local" id="time-start" name="time-start">
+        <label for="time-end">Ora di fine:</label>
+        <input type="datetime-local" id="time-end" name="time-end">
+        <input type="submit" value="Prenota">
+    </form>
+    <div id="message"></div>
+    <script src="script.js"></script>
 </body>
 </html>
