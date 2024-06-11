@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Prenotazione Parcheggio</title>
+    <title>Parcheggio API Frontend</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <h1>Prenotazione Parcheggio</h1>
-    <form id="reservation-form">
-        <label for="parking-id">ID Parcheggio:</label>
-        <input type="text" id="parking-id" name="parking-id">
-        <label for="time-start">Ora di inizio:</label>
-        <input type="datetime-local" id="time-start" name="time-start">
-        <label for="time-end">Ora di fine:</label>
-        <input type="datetime-local" id="time-end" name="time-end">
-        <input type="submit" value="Prenota">
+    <h1>Parcheggio API Frontend</h1>
+    <form id="feeForm">
+        <label for="parkingName">Nome del parcheggio:</label><br>
+        <input type="text" id="parkingName" name="parkingName"><br>
+        <input type="submit" value="Ottieni la somma totale delle tariffe">
     </form>
-    <div id="message"></div>
+    <p id="totalFee"></p>
     <script src="script.js"></script>
 </body>
 </html>
