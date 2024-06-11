@@ -8,19 +8,19 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Icons
-var defaultIcon = L.icon({iconUrl:'images/default.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var carIconBlue = L.icon({iconUrl:'images/carblue.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var carIconGreen = L.icon({iconUrl:'images/cargreen.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var carIconYellow = L.icon({iconUrl:'images/caryellow.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var carIconRed = L.icon({iconUrl:'images/carred.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var bikeIconBlue = L.icon({iconUrl:'images/bikeblue.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var bikeIconGreen = L.icon({iconUrl:'images/bikegreen.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var bikeIconYellow = L.icon({iconUrl:'images/bikeyellow.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var bikeIconRed = L.icon({iconUrl:'images/bikered.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var motorbikeIconBlue = L.icon({iconUrl:'images/motorbikeblue.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var motorbikeIconGreen = L.icon({iconUrl:'images/motorbikegreen.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var motorbikeIconYellow = L.icon({iconUrl:'images/motorbikeyellow.svg',iconSize:[38,95],iconAnchor:[20,70]});
-var motorbikeIconRed = L.icon({iconUrl:'images/motorbikered.svg',iconSize:[38,95],iconAnchor:[20,70]});
+var defaultIcon = L.icon({ iconUrl: 'images/default.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var carIconBlue = L.icon({ iconUrl: 'images/carblue.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var carIconGreen = L.icon({ iconUrl: 'images/cargreen.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var carIconYellow = L.icon({ iconUrl: 'images/caryellow.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var carIconRed = L.icon({ iconUrl: 'images/carred.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var bikeIconBlue = L.icon({ iconUrl: 'images/bikeblue.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var bikeIconGreen = L.icon({ iconUrl: 'images/bikegreen.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var bikeIconYellow = L.icon({ iconUrl: 'images/bikeyellow.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var bikeIconRed = L.icon({ iconUrl: 'images/bikered.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var motorbikeIconBlue = L.icon({ iconUrl: 'images/motorbikeblue.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var motorbikeIconGreen = L.icon({ iconUrl: 'images/motorbikegreen.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var motorbikeIconYellow = L.icon({ iconUrl: 'images/motorbikeyellow.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
+var motorbikeIconRed = L.icon({ iconUrl: 'images/motorbikered.svg', iconSize: [38, 95], iconAnchor: [20, 70] });
 
 // Keep track of the markers
 var carMarkers = Array();
@@ -45,10 +45,10 @@ function showCars() {
                 else if (parking.nFree / parking.nParkingSpaces <= 0.05) icon = carIconRed;   // Less than 5% are free
 
                 // Add marker
-                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
-                    .on('click', () => {
-                        document.location = '/api/v1/parkings/' + parking.id;
-                    })
+                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], { icon: icon })
+                    // .on('click', () => {
+                    //     document.location = '/api/v1/parkings/' + parking.id;
+                    // })
                     .addTo(map);
                 carMarkers.push(m);
             }
@@ -73,7 +73,7 @@ function showBikes() {
                 else if (parking.nFree / parking.nParkingSpaces <= 0.05) icon = bikeIconRed;
 
                 // Add marker
-                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
+                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], { icon: icon })
                     .on('click', () => {
                         document.location = '/api/v1/parkings/' + parking.id;
                     })
@@ -101,7 +101,7 @@ function showMotorbikes() {
                 else if (parking.nFree / parking.nParkingSpaces <= 0.05) icon = motorbikeIconRed;
 
                 // Add marker
-                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], {icon: icon})
+                var m = L.marker([parking.coordinates.nord, parking.coordinates.est], { icon: icon })
                     .on('click', () => {
                         document.location = '/api/v1/parkings/' + parking.id;
                     })

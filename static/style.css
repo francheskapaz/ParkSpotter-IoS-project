@@ -9,7 +9,7 @@ body {
 }
 
 #map-container {
-    height: 80vh;
+    min-height: 80vh;
     width: 90%;
     margin-bottom: 10vh;
     margin-left: 5%;

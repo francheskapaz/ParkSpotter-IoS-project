@@ -28,7 +28,7 @@
                 </div>
                 <div id="auth" style="display:none">
                     <a href="/user.html">Profilo</a>
-                    <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
+                    <a href="javascript:window.localStorage.removeItem('token');document.location='/';">Log-out</a>
                 </div>
                 <div id="notauth">
                     <a href="/signup.html">Sign-up</a>
@@ -40,6 +40,8 @@
         <div id="map-container">
             <div id="map"></div>
         </div>
+
+        <iframe src="https://parkspotter-ios-project-1.onrender.com/" style="min-height:800px;width:100%;display:block;margin:0 auto;border-style:none;"></iframe>
         <script>
             $(document).ready(function() {
                 showCars();
