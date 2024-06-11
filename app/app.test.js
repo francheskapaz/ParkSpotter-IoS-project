@@ -1,64 +1,34 @@
 const request = require('supertest');
-const app = require('./app'); // Importa il tuo server Express
-const Parking = require('./models/parking.js'); // Importa il modello Parking
-const prenotazioni = require('./prenotazioni.js'); // Importa le prenotazioni di esempio
+const app = require('./server.js'); // Importa l'app Express
 
-// Carica le prenotazioni nel database
-beforeEach(async () => {
-    for (let prenotazione of prenotazioni) {
-        const parking = await Parking.findOne({ name: prenotazione.parkingName });
-        if (parking) {
-            parking.reservations.push({
-                timeStart: prenotazione.timeStart,
-                timeEnd: prenotazione.timeEnd,
-                fee: prenotazione.fee
-            });
-            await parking.save();
-        }
-    }
-}, 10000);
+let server;
 
-// Rimuovi le prenotazioni dal database
-afterEach(async () => {
-    for (let prenotazione of prenotazioni) {
-        const parking = await Parking.findOne({ name: prenotazione.parkingName });
-        if (parking) {
-            parking.reservations = [];
-            await parking.save();
-        }
-    }
-}, 10000);
+// Avvia il server prima dei test
+beforeAll(() => {
+  server = app.listen(8080, () => {
+    console.log("Server in esecuzione sulla porta 8080");
+  });
+});
 
-// Testa l'API GET /:name/totalFee
-test('GET /:name/totalFee', async () => {
-    for (let prenotazione of prenotazioni) {
-        const response = await request(app).get(`/api/${prenotazione.parkingName}/totalFee`);
-        expect(response.status).toBe(200);
+// Arresta il server dopo i test
+afterAll((done) => {
+  server.close(done);
+});
 
-        let totalFee = 0;
-        for (let otherPrenotazione of prenotazioni) {
-            if (otherPrenotazione.parkingName === prenotazione.parkingName) {
-                totalFee += otherPrenotazione.fee;
-            }
-        }
+describe('POST /api/parking/:id/reservations', () => {
+    it('dovrebbe creare una nuova prenotazione', async () => {
+        const id = '6666ca5472481d0a81efeaeb';
+        const newReservation = {
+            timeStart: new Date('2024-05-06T16:00:00Z'),
+            timeEnd: new Date('2024-05-06T17:00:00Z')
+        };
 
-        expect(response.body.totalFee).toBe(totalFee);
-    }
-}, 10000);
+        const response = await request(server)
+            .post(`/api/parking/${id}/reservations`)
+            .send(newReservation);
 
-// Testa l'API PUT /:name/updateTotalFee
-test('PUT /:name/updateTotalFee', async () => {
-    for (let prenotazione of prenotazioni) {
-        const response = await request(app).put(`/api/${prenotazione.parkingName}/updateTotalFee`);
-        expect(response.status).toBe(200);
-
-        let totalFee = 0;
-        for (let otherPrenotazione of prenotazioni) {
-            if (otherPrenotazione.parkingName === prenotazione.parkingName) {
-                totalFee += otherPrenotazione.fee;
-            }
-        }
-
-        expect(response.body.parking.totalFee).toBe(totalFee);
-    }
-}, 10000);
+        expect(response.statusCode).toBe(201);
+        expect(response.body.message).toBe('Prenotazione creata con successo');
+        expect(response.body.parking.reservations).toContainEqual(expect.objectContaining(newReservation));
+    }, 100000); // Imposta un timeout di 10 secondi per questo test
+});

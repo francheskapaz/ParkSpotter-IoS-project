@@ -6,9 +6,9 @@ info:
 servers:
   - url: http://localhost:8080/api
 paths:
-  /{name}/totalFee:
-    get:
-      summary: Ottieni la somma totale delle tariffe di un parcheggio
+  /{id}/reservations:
+    post:
+      summary: Crea una nuova prenotazione
       parameters:
         - name: name
           in: path
@@ -33,7 +33,44 @@ paths:
     put:
       summary: Aggiorna la somma totale delle tariffe di un parcheggio
       parameters:
-        - name: name
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: resId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prenotazione'
+      responses:
+        '200':
+          description: Prenotazione modificata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prenotazione'
+        '400':
+          description: Errore nella richiesta
+        '404':
+          description: Prenotazione o parcheggio non trovato
+        '500':
+          description: Errore interno del server
+    delete:
+      summary: Cancella una prenotazione
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: resId
           in: path
           required: true
           schema:
@@ -44,7 +81,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Parcheggio'
+                $ref: '#/components/schemas/Prenotazione'
+        '404':
+          description: Prenotazione o parcheggio non trovato
+        '500':
+          description: Errore interno del server
+    get:
+      summary: Ottieni tutte le prenotazioni di un parcheggio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco delle prenotazioni
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prenotazione'
         '404':
           description: Parcheggio non trovato
         '500':
