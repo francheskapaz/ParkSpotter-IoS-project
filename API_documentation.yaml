@@ -6,11 +6,11 @@ info:
 servers:
   - url: http://localhost:8080/api
 paths:
-  /{id}/reservations:
+  /{name}/reservations:
     post:
       summary: Crea una nuova prenotazione
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -37,7 +37,7 @@ paths:
     put:
       summary: Modifica una prenotazione esistente
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -69,7 +69,7 @@ paths:
     delete:
       summary: Cancella una prenotazione
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -93,7 +93,7 @@ paths:
     get:
       summary: Ottieni tutte le prenotazioni di un parcheggio
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:

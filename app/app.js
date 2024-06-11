@@ -8,8 +8,8 @@ function overlaps(timeStart1, timeEnd1, timeStart2, timeEnd2) {
 }
 
 // Crea una nuova prenotazione
-router.post('/:id/reservations', async (req, res) => {
-    const { id } = req.params;
+router.post('/:name/reservations', async (req, res) => {
+    const { name } = req.params;
     const { timeStart, timeEnd } = req.body;
 
     // Verifica che il tempo di inizio e di fine della prenotazione siano validi
@@ -18,7 +18,7 @@ router.post('/:id/reservations', async (req, res) => {
     }
 
     try {
-        const parking = await Parking.findById(id);
+        const parking = await Parking.findOne({ name: name });
         if (!parking) {
             return res.status(404).json({ message: 'Parcheggio non trovato' });
         }
@@ -55,8 +55,8 @@ router.post('/:id/reservations', async (req, res) => {
 });
 
 // Modifica una prenotazione esistente
-router.put('/:id/reservations/:resId', async (req, res) => {
-    const { id, resId } = req.params;
+router.put('/:name/reservations/:resId', async (req, res) => {
+    const { name, resId } = req.params;
     const { timeStart, timeEnd } = req.body;
 
     // Verifica che il tempo di inizio e di fine della prenotazione siano validi
@@ -65,7 +65,7 @@ router.put('/:id/reservations/:resId', async (req, res) => {
     }
 
     try {
-        const parking = await Parking.findById(id);
+        const parking = await Parking.findOne({ name: name });
         if (!parking) {
             return res.status(404).json({ message: 'Parcheggio non trovato' });
         }
@@ -101,11 +101,11 @@ router.put('/:id/reservations/:resId', async (req, res) => {
 });
 
 // Cancella una prenotazione
-router.delete('/:id/reservations/:resId', async (req, res) => {
-    const { id, resId } = req.params;
+router.delete('/:name/reservations/:resId', async (req, res) => {
+    const { name, resId } = req.params;
 
     try {
-        const parking = await Parking.findById(id);
+        const parking = await Parking.findOne({ name: name });
         if (!parking) {
             return res.status(404).json({ message: 'Parcheggio non trovato' });
         }
@@ -126,11 +126,11 @@ router.delete('/:id/reservations/:resId', async (req, res) => {
 });
 
 // Ottieni tutte le prenotazioni di un parcheggio
-router.get('/:id/reservations', async (req, res) => {
-    const { id } = req.params;
+router.get('/:name/reservations', async (req, res) => {
+    const { name } = req.params;
 
     try {
-        const parking = await Parking.findById(id);
+        const parking = await Parking.findOne({ name: name });
         if (!parking) {
             return res.status(404).json({ message: 'Parcheggio non trovato' });
         }
