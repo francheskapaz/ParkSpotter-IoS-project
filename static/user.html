@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/script.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body onload="showUser()">
+        <a href="/" style="text-decoration: none;color: #333;"> <h1>Parkspotter</h1> </a>
+        <nav>
+            <div class="links">
+                <div id="admin" style="display:none">
+                    <a href="/admin.html">Admin</a>
+                </div>
+                <div id="auth" style="display:none">
+                    <a href="/user.html">Profilo</a>
+                    <a href="javascript:window.localStorage.removeItem('token');location.reload();">Log-out</a>
+                </div>
+                <div id="notauth">
+                    <a href="/signup.html">Sign-up</a>
+                    <a href="/login.html">Log-in</a>
+                </div>
+            </div>
+        </nav>
+
+        <h2>Profilo</h2>
+
+        <div id="info">
+        </div>
+        <h3 class="Proprietario">I miei Parcheggi</h3>
+        <div id="parkings" class="Proprietario">
+        </div>
+        <br>
+        <div id="newParking" class="Proprietario">
+            <h3>Nuovo parcheggio</h3>
+            <form action="" id="newParkingForm">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name" placeholder="nome_parcheggio" required><br><br>
+                <label for="fee">Tariffa (€/h)</label>
+                <input type="number" id="fee" name="fee" placeholder="1" required><br><br>
+                <label for="stop">Sosta massima (minuti)</label>
+                <input type="number" id="stop" name="stop" placeholder="0" required><br><br>
+                <label for="coordinates">Coordinate</label>
+                <input type="number" id="coordinatesN" name="coordinates" placeholder="Nord" step="any" required>
+                <input type="number" id="coordinatesE" name="coordinates" placeholder="Est" step="any" required><br><br>
+                <label for="nSpaces">Numero di parcheggi</label>
+                <input type="number" id="nSpaces" name="nSpaces" placeholder="10" required><br><br>
+                <label for="vehicleType">Tipo di veicolo</label>
+                <select name="vehicleType" id="vehicleType">
+                    <option value="car">Automobile</option>
+                    <option value="motorbike">Moto</option>
+                    <option value="bike">Bicicletta</option>
+                </select><br><br>
+                <button type="submit">Invia</button>
+            </form>
+        </div>
+        <script>
+        getInfo();
+        </script>
+        <script>
+        // Submit "newParkingForm"
+        let newParkingForm = document.getElementById("newParkingForm");
+        newParkingForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById('name').value,
+                fee: Number(document.getElementById('fee').value),
+                maxStop: Number(document.getElementById('stop').value),
+                open: false,
+                coordinates: {
+                    nord: Number(document.getElementById('coordinatesN').value),
+                    est: Number(document.getElementById('coordinatesE').value)
+                },
+                nParkingSpaces: Number(document.getElementById('nSpaces').value),
+                vehicleType: document.getElementById('vehicleType').value
+            };
+
+            fetch('/api/v1/parkings', {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'X-access-token': window.localStorage.getItem('token')
+                }),
+                body: JSON.stringify(data)
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((data) => {
+                    if (data.success) {
+                        fetch('/api/v2/rents', {
+                            method: 'POST',
+                            headers: new Headers({
+                                'Content-Type': 'application/json',
+                                'X-access-token': window.localStorage.getItem('token')
+                            }),
+                            body: JSON.stringify({
+                                parkingId: data.parkingId
+                            })
+                        })
+                            .then(async (response) => {
+                                response = await response.json();
+                                if (response.success) {
+                                    alert('Parcheggio salvato correnttamente');
+                                    location.reload();
+                                }
+                            })
+                    }
+                })
+        });
+        </script>
+    </body>
+</html>
+

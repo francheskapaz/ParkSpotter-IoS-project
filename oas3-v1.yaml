@@ -1,0 +1,526 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: "ParkSpotter OpenAPI 3.0"
+  description: API for managing parkings.
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Localhost
+paths:
+  /users:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - email
+                - username
+                - password
+              properties:
+                type:
+                  type: string
+                  description: 'User type ("Consumer" or "Proprietario")'
+                email:
+                  type: string
+                  format: email
+                  description: 'Email of the user'
+                username:
+                  type: string
+                  description: 'Username to log in the application'
+                password:
+                  type: string
+                  description: 'Password of the user'
+      responses:
+        '201':
+          description: 'User created successfully. Link in the Location header'
+        '400':
+          description: 'Bad request, invalid input'
+  /users/{userId}:
+    get:
+      summary: Return user info
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '301':
+          description: Redirect to the logged user's info
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+    delete:
+      summary: Delete user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: x-access-token
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+  /authentication:
+    post:
+      summary: Authenticate the user and generate a new token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the user
+                password:
+                  type: string
+                  description: Password of the user
+      responses:
+        '200':
+          description: User authenticated successfully, token generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  id:
+                    type: string
+                  self:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '403':
+          description: Wrong password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /parkings:
+    get:
+      summary: Get all parkings
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parking'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new parking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parking'
+      responses:
+        '201':
+          description: Parking created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+                  parking:
+                    $ref: '#/components/schemas/Parking'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /parkings/{id}:
+    get:
+      summary: Get a specific parking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parking'
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update an existing parking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parking'
+      responses:
+        '200':
+          description: Parking updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+                  parking:
+                    $ref: '#/components/schemas/Parking'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a parking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Parking deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '404':
+          description: Parking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /feedbacks:
+    get:
+      summary: Get all feedbacks
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      responses:
+        '201':
+          description: Feedback created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /feedbacks/{id}:
+    get:
+      summary: Get a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      responses:
+        '200':
+          description: Feedback updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '400':
+          description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a feedback by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Feedback deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+        '404':
+          description: Feedback not found
+components:
+  schemas:
+    Parking:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the parking spot
+        name:
+          type: string
+          description: Name of the parking spot
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: double
+              description: Latitude of the parking spot
+            longitude:
+              type: number
+              format: double
+              description: Longitude of the parking spot
+          required:
+            - latitude
+            - longitude
+        available:
+          type: boolean
+          description: Availability status of the parking spot
+        ownerId:
+          type: string
+          description: The ID of the owner of the parking spot
+        pricePerHour:
+          type: number
+          format: double
+          description: Hourly price for the parking spot
+    Feedback:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: The ID of the user who provided the feedback
+        parking_id:
+          type: string
+          description: The ID of the parking for which the feedback is provided
+        score:
+          type: number
+          minimum: 1
+          maximum: 5
+          description: The score given in the feedback, ranging from 1 to 5
+        comment:
+          type: string
+          description: An optional comment provided along with the feedback
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the feedback was provided
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+    User:
+      type: object
+      required:
+        - type
+        - username
+        - email
+        - password
+      properties:
+        type:
+          type: string
+          description: User type ("Consumer", "Proprietario", "Admin")
+        username:
+          type: string
+          description: 'Username that identifies the user'
+        email:
+          type: string
+          format: email
+          description: 'E-mail of the user'
+        password:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        credibility:
+          type: number
+          format: float
+          description: Credibility of the user, applicable if user type is "Consumer"
+        credit:
+          type: number
+          format: float
+          description: Credit of the user, applicable if user type is "Proprietario"

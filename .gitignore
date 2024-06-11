@@ -21,5 +21,15 @@ dist/
 # Ignora la cartella build
 /build/
 
-# Ignora la cartella out
-/out/
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
