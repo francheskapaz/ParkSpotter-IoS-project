@@ -15,16 +15,16 @@ afterAll((done) => {
   server.close(done);
 });
 
-describe('POST /api/parking/:id/reservations', () => {
+describe('POST /api/parking/:name/reservations', () => {
     it('dovrebbe creare una nuova prenotazione', async () => {
-        const id = '6666ca5472481d0a81efeaeb';
+        const name = 'NomeDelParcheggio'; // Usa il nome del parcheggio qui
         const newReservation = {
             timeStart: new Date('2024-05-06T16:00:00Z'),
             timeEnd: new Date('2024-05-06T17:00:00Z')
         };
 
         const response = await request(server)
-            .post(`/api/parking/${id}/reservations`)
+            .post(`/api/parking/${name}/reservations`) // Modifica qui
             .send(newReservation);
 
         expect(response.statusCode).toBe(201);
