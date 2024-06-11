@@ -2,96 +2,37 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Parcheggio API
-  description: API per la gestione delle prenotazioni di parcheggio
+  description: API per la gestione delle prenotazioni di parcheggio e il calcolo delle tariffe totali
 servers:
   - url: http://localhost:8080/api
 paths:
-  /{id}/reservations:
-    post:
-      summary: Crea una nuova prenotazione
+  /{id}/totalFee:
+    get:
+      summary: Ottieni la somma totale delle tariffe di un parcheggio
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Prenotazione'
       responses:
-        '201':
-          description: Prenotazione creata con successo
+        '200':
+          description: Somma totale delle tariffe ottenuta con successo
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Prenotazione'
-        '400':
-          description: Errore nella richiesta
+                type: object
+                properties:
+                  totalFee:
+                    type: number
+                    description: Somma totale delle tariffe
         '404':
           description: Parcheggio non trovato
         '500':
           description: Errore interno del server
+  /{id}/updateTotalFee:
     put:
-      summary: Modifica una prenotazione esistente
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: resId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Prenotazione'
-      responses:
-        '200':
-          description: Prenotazione modificata con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Prenotazione'
-        '400':
-          description: Errore nella richiesta
-        '404':
-          description: Prenotazione o parcheggio non trovato
-        '500':
-          description: Errore interno del server
-    delete:
-      summary: Cancella una prenotazione
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: resId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Prenotazione cancellata con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Prenotazione'
-        '404':
-          description: Prenotazione o parcheggio non trovato
-        '500':
-          description: Errore interno del server
-    get:
-      summary: Ottieni tutte le prenotazioni di un parcheggio
+      summary: Aggiorna la somma totale delle tariffe di un parcheggio
       parameters:
         - name: id
           in: path
@@ -100,13 +41,11 @@ paths:
             type: string
       responses:
         '200':
-          description: Elenco delle prenotazioni
+          description: Somma totale delle tariffe aggiornata con successo
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Prenotazione'
+                $ref: '#/components/schemas/Parcheggio'
         '404':
           description: Parcheggio non trovato
         '500':
@@ -127,3 +66,9 @@ components:
         fee:
           type: number
           description: Tariffa della prenotazione
+    Parcheggio:
+      type: object
+      properties:
+        totalFee:
+          type: number
+          description: Somma totale delle tariffe
